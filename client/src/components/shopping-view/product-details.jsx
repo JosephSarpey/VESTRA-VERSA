@@ -1,0 +1,242 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { ShoppingCart, StarIcon } from "lucide-react";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Separator } from "../ui/separator";
+import { Input } from "../ui/input";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { toast } from "sonner";
+import { setProductDetails } from "@/store/shop/products-slice";
+import { Label } from "../ui/label";
+import StarRatingComponent from "../common/star-rating";
+import { useEffect, useState } from "react";
+import { addReview, getReviews } from "@/store/shop/review-slice";
+
+function ProductDetailsDialog({ open, setOpen, productDetails }) {
+  const [reviewMsg, setReviewMsg] = useState("");
+  const [rating, setRating] = useState(0);
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { reviews } = useSelector((state) => state.shopReview);
+
+  function handleRatingChange(getRating) {
+    setRating(getRating);
+  }
+
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(
+            `Only ${getQuantity} quantities can be added for this item`
+          );
+
+          return;
+        }
+      }
+    }
+
+    console.log(getCurrentProductId);
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast.success(data?.payload?.message);
+      }
+    });
+  }
+
+  useEffect(() => {
+    if (productDetails !== null) {
+      dispatch(getReviews(productDetails?._id));
+    }
+  }, [productDetails]);
+
+  if (!productDetails) return null;
+
+  function handleDialogClose() {
+    setOpen(false);
+    dispatch(setProductDetails());
+    setRating(0);
+    setReviewMsg("");
+  }
+
+  function handleAddReview() {
+    dispatch(
+      addReview({
+        productId: productDetails?._id,
+        userId: user?.id,
+        userName: user?.userName,
+        reviewMessage: reviewMsg,
+        reviewValue: rating,
+      })
+    ).then((data) => {
+      if (data.payload.success) {
+        setRating(0);
+        setReviewMsg("");
+        dispatch(getReviews(productDetails?._id));
+        toast.success(data.payload.message);
+      }
+    });
+  }
+
+  console.log(reviews, "reviews");
+
+  const averageReview =
+    reviews && reviews.length > 0
+      ? reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
+        reviews.length
+      : 0;
+
+  return (
+    <Dialog open={open} onOpenChange={handleDialogClose}>
+      <DialogContent className="p-4 sm:p-6 md:p-8 max-w-[95vw] sm:max-w-[90vw] md:max-w-[800px] lg:max-w-[900px]">
+        <DialogTitle className="text-lg font-semibold mb-4 sm:hidden">
+          {productDetails.title || "Product Details"}
+        </DialogTitle>
+
+        <div className="flex flex-col sm:flex-row gap-6">
+          {/* Image Section */}
+          <div className="flex-shrink-0 w-full sm:w-1/2">
+            {productDetails.image ? (
+              <img
+                src={productDetails.image}
+                alt={productDetails.title || "Product"}
+                className="w-full h-auto rounded-lg object-cover aspect-square"
+              />
+            ) : (
+              <div className="w-full aspect-square bg-gray-200 flex items-center justify-center rounded-lg">
+                No Image
+              </div>
+            )}
+          </div>
+
+          {/* Details Section */}
+          <div className="flex flex-col w-full sm:w-1/2 justify-between">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+              {productDetails.title}
+            </h2>
+            <p className=" text-xl text-muted-foreground mb-5">
+              {productDetails.description || "No description available."}
+            </p>
+
+            <div className="flex items-center gap-4 mt-auto">
+              <p
+                className={`text-xl font-semibold ${
+                  productDetails.salePrice > 0
+                    ? "line-through text-red-500"
+                    : "text-primary"
+                }`}
+              >
+                ${productDetails.price}
+              </p>
+              {productDetails.salePrice > 0 && (
+                <p className="text-xl font-bold text-green-600">
+                  ${productDetails.salePrice}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-0.5">
+                <StarRatingComponent rating={averageReview} />
+              </div>
+              <span className="text-muted-foreground">
+                ({averageReview.toFixed(2)})
+              </span>
+            </div>
+            <div className="mt-5 mb-5">
+              {productDetails?.totalStock === 0 ? (
+                <Button className="w-full opacity-60 cursor-not-allowed">
+                  <ShoppingCart className="w-4 h-4" />
+                  Out Of Stock
+                </Button>
+              ) : (
+                <Button
+                  className="w-full cursor-pointer"
+                  onClick={() =>
+                    handleAddToCart(
+                      productDetails?._id,
+                      productDetails?.totalStock
+                    )
+                  }
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  Add To Cart
+                </Button>
+              )}
+            </div>
+            <Separator />
+            <div className="max-h-[300px] overflow-auto">
+              <h2 className="text-xl font-bold mb-4">Reviews</h2>
+              <div className="grid gap-6">
+                {reviews && reviews.length > 0 ? (
+                  reviews.map((reviewItem) => (
+                    <div className="flex gap-4">
+                      <Avatar className="w-10 h-10 border">
+                        <AvatarFallback>
+                          {reviewItem?.userName[0].toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="grid gap-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold">{reviewItem?.userName}</h3>
+                        </div>
+                        <div className="flex items-center gap-0.5">
+                          <StarRatingComponent
+                            rating={reviewItem?.reviewValue}
+                          />
+                        </div>
+                        <p className="text-muted-foreground">
+                          {reviewItem.reviewMessage}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <h1>No Reviews</h1>
+                )}
+              </div>
+            </div>
+            <div className="mt-10 flex-col flex gap-2">
+              <Label>Write a review</Label>
+              <div className="flex gap-1">
+                <StarRatingComponent
+                  rating={rating}
+                  handleRatingChange={handleRatingChange}
+                />
+              </div>
+              <Input
+                name="reviewMsg"
+                value={reviewMsg}
+                onChange={(event) => setReviewMsg(event.target.value)}
+                placeholder="Write a review..."
+              />
+              <Button
+                onClick={handleAddReview}
+                disabled={reviewMsg.trim() === ""}
+              >
+                Submit
+              </Button>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default ProductDetailsDialog;
