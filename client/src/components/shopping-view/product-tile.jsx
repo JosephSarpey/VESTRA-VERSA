@@ -8,7 +8,7 @@ import { ShoppingCart, CheckCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getReviews } from "@/store/shop/review-slice";
 import StarRatingComponent from "@/components/common/star-rating";
 
@@ -25,6 +25,7 @@ function ShoppingProductTile({
 
   const dispatch = useDispatch();
   const [averageReview, setAverageReview] = useState(0);
+  const [hasReviews, setHasReviews] = useState(false);
 
   const handleCartClick = () => {
     if (!isOutOfStock) {
@@ -50,8 +51,10 @@ function ShoppingProductTile({
             items.reduce((sum, item) => sum + item.reviewValue, 0) /
             items.length;
           setAverageReview(avg);
+          setHasReviews(true);
         } else {
           setAverageReview(0);
+          setHasReviews(false);
         }
       });
     }
@@ -139,11 +142,11 @@ function ShoppingProductTile({
 
               {/* ⭐ Rating Display */}
               <div className="flex items-center gap-1 mt-2">
-                {averageReview > 0 ? (
+                {hasReviews ? (
                   <>
                     <StarRatingComponent rating={averageReview} />
                     <span className="text-xs text-muted-foreground">
-                      ({averageReview.toFixed(1)})
+                      ({averageReview.toFixed(2)})
                     </span>
                   </>
                 ) : (
