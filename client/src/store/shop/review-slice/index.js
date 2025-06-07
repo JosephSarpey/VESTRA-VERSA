@@ -8,7 +8,7 @@ const initialState = {
 
 export const addReview = createAsyncThunk("/shop/addReview", async (data) => {
   const response = await axios.post(
-    `https://vestra-versa.onrender.com/api/shop/review/add`,
+    `/api/shop/review/add`,
      data
   );
 
@@ -17,7 +17,7 @@ export const addReview = createAsyncThunk("/shop/addReview", async (data) => {
 
 export const getReviews = createAsyncThunk("/shop/getReviews", async (id) => {
   const response = await axios.get(
-    `https://vestra-versa.onrender.com/api/shop/review/${id}`
+    `/api/shop/review/${id}`
   );
 
   return response.data;
