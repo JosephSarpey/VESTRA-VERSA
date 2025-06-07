@@ -55,7 +55,7 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-export const checkAtuh = createAsyncThunk(
+export const checkAuth = createAsyncThunk(
   "/auth/check-auth",
 
   async () => {
@@ -108,15 +108,15 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       })
-      .addCase(checkAtuh.pending, (state) => {
+      .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(checkAtuh.fulfilled, (state, action) => {
+      .addCase(checkAuth.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
       })
-      .addCase(checkAtuh.rejected, (state) => {
+      .addCase(checkAuth.rejected, (state) => {
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
