@@ -22,6 +22,7 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
+import Footer from "@/components/shopping-view/footer";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -185,6 +186,7 @@ function ShoppingHome() {
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
+      <Footer/>
     </div>
   );
 }
