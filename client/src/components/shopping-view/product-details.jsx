@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ShoppingCart, StarIcon } from "lucide-react";
+/* eslint-disable no-unused-vars */
+import { ShoppingCart, CheckCircle } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
@@ -13,39 +14,35 @@ import { Label } from "../ui/label";
 import StarRatingComponent from "../common/star-rating";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
+import { motion, AnimatePresence } from "framer-motion";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
   const [rating, setRating] = useState(0);
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
+
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
 
-  function handleRatingChange(getRating) {
-    setRating(getRating);
-  }
+  const handleRatingChange = (getRating) => setRating(getRating);
 
-  function handleAddToCart(getCurrentProductId, getTotalStock) {
+  const handleAddToCart = (getCurrentProductId, getTotalStock) => {
     let getCartItems = cartItems.items || [];
 
-    if (getCartItems.length) {
-      const indexOfCurrentItem = getCartItems.findIndex(
-        (item) => item.productId === getCurrentProductId
-      );
-      if (indexOfCurrentItem > -1) {
-        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        if (getQuantity + 1 > getTotalStock) {
-          toast.error(
-            `Only ${getQuantity} quantities can be added for this item`
-          );
+    const indexOfCurrentItem = getCartItems.findIndex(
+      (item) => item.productId === getCurrentProductId
+    );
 
-          return;
-        }
+    if (indexOfCurrentItem > -1) {
+      const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+      if (getQuantity + 1 > getTotalStock) {
+        toast.error(`Only ${getQuantity} quantities can be added for this item`);
+        return;
       }
     }
 
-    console.log(getCurrentProductId);
     dispatch(
       addToCart({
         userId: user?.id,
@@ -56,9 +53,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
       if (data?.payload.success) {
         dispatch(fetchCartItems(user?.id));
         toast.success(data?.payload?.message);
+        setIsAddedToCart(true);
+        setTimeout(() => setIsAddedToCart(false), 2000); // Reset after 2s
       }
     });
-  }
+  };
 
   useEffect(() => {
     if (productDetails !== null) {
@@ -68,14 +67,15 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
 
   if (!productDetails) return null;
 
-  function handleDialogClose() {
+  const handleDialogClose = () => {
     setOpen(false);
     dispatch(setProductDetails());
     setRating(0);
     setReviewMsg("");
-  }
+    setIsAddedToCart(false);
+  };
 
-  function handleAddReview() {
+  const handleAddReview = () => {
     dispatch(
       addReview({
         productId: productDetails?._id,
@@ -92,9 +92,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         toast.success(data.payload.message);
       }
     });
-  }
-
-  console.log(reviews, "reviews");
+  };
 
   const averageReview =
     reviews && reviews.length > 0
@@ -150,6 +148,8 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 </p>
               )}
             </div>
+
+            {/* Star Rating */}
             <div className="flex items-center gap-2 mt-2">
               <div className="flex items-center gap-0.5">
                 <StarRatingComponent rating={averageReview} />
@@ -158,6 +158,8 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 ({averageReview.toFixed(2)})
               </span>
             </div>
+
+            {/* Add to Cart */}
             <div className="mt-5 mb-5">
               {productDetails?.totalStock === 0 ? (
                 <Button className="w-full opacity-60 cursor-not-allowed">
@@ -166,7 +168,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 </Button>
               ) : (
                 <Button
-                  className="w-full cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2"
                   onClick={() =>
                     handleAddToCart(
                       productDetails?._id,
@@ -174,18 +176,46 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                     )
                   }
                 >
-                  <ShoppingCart className="w-4 h-4" />
-                  Add To Cart
+                  <AnimatePresence mode="wait" initial={false}>
+                    {isAddedToCart ? (
+                      <motion.div
+                        key="check"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex items-center gap-2"
+                      >
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        Added
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="cart"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex items-center gap-2"
+                      >
+                        <ShoppingCart className="w-5 h-5" />
+                        Add To Cart
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </Button>
               )}
             </div>
+
             <Separator />
+
+            {/* Reviews */}
             <div className="max-h-[300px] overflow-auto">
               <h2 className="text-xl font-bold mb-4">Reviews</h2>
               <div className="grid gap-6">
                 {reviews && reviews.length > 0 ? (
                   reviews.map((reviewItem) => (
-                    <div className="flex gap-4">
+                    <div className="flex gap-4" key={reviewItem._id}>
                       <Avatar className="w-10 h-10 border">
                         <AvatarFallback>
                           {reviewItem?.userName[0].toUpperCase()}
@@ -196,9 +226,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                           <h3 className="font-bold">{reviewItem?.userName}</h3>
                         </div>
                         <div className="flex items-center gap-0.5">
-                          <StarRatingComponent
-                            rating={reviewItem?.reviewValue}
-                          />
+                          <StarRatingComponent rating={reviewItem?.reviewValue} />
                         </div>
                         <p className="text-muted-foreground">
                           {reviewItem.reviewMessage}
@@ -211,6 +239,8 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 )}
               </div>
             </div>
+
+            {/* Write Review */}
             <div className="mt-10 flex-col flex gap-2">
               <Label>Write a review</Label>
               <div className="flex gap-1">
