@@ -20,6 +20,7 @@ import {
   resetOrderDetails,
 } from "@/store/shop/order-slice";
 import { Badge } from "../ui/badge";
+import Footer from "./footer";
 
 function ShoppingOrders() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -42,6 +43,7 @@ function ShoppingOrders() {
   console.log(orderDetails, "orderDetails");
 
   return (
+    <>
     <Card>
       <CardHeader>
         <CardTitle>Order History</CardTitle>
@@ -104,6 +106,8 @@ function ShoppingOrders() {
         </Table>
       </CardContent>
     </Card>
+    <Footer/>
+    </>
   );
 }
 

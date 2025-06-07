@@ -7,9 +7,9 @@ function Footer() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Logo & Description */}
         <div>
-          <h2 className="text-2xl font-bold">Bhanksshopping</h2>
+          <h2 className="text-2xl font-bold">VESTRA VERSA</h2>
           <p className="mt-2 text-sm text-gray-400">
-            Shop smart. Shop everything. Your favorite online store.
+            Shop smart. Shop Fast. Your favorite online store.
           </p>
         </div>
 
@@ -23,7 +23,7 @@ function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/shop" className="hover:underline">
+              <Link to="/listing" className="hover:underline">
                 Shop
               </Link>
             </li>
@@ -72,7 +72,7 @@ function Footer() {
 
       {/* Bottom Text */}
       <div className="mt-10 text-center text-xs text-gray-500">
-        &copy; {new Date().getFullYear()} Bhanksshopping. All rights reserved.
+        &copy; {new Date().getFullYear()} VESTRA VERSA. All rights reserved.
       </div>
     </footer>
   );
