@@ -27,7 +27,8 @@ import { fetchCartItems } from "@/store/shop/cart-slice";
 import logo from "../../assets/vv_logo.jpg";
 import { Label } from "../ui/label";
 
-function MenuItems() {
+// Updated MenuItems to accept setOpenSheet
+function MenuItems({ setOpenSheet }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -45,11 +46,14 @@ function MenuItems() {
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
 
-    location.pathname.includes("listing") && currentFilter !== null
-      ? setSearchParams(
-          new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
-        )
-      : navigate(getCurrentMenuItem.path);
+    if (location.pathname.includes("listing") && currentFilter !== null) {
+      setSearchParams(new URLSearchParams(`?category=${getCurrentMenuItem.id}`));
+    } else {
+      navigate(getCurrentMenuItem.path);
+    }
+
+    // Auto-close the sheet if in mobile view
+    if (setOpenSheet) setOpenSheet(false);
   }
 
   return (
@@ -92,7 +96,9 @@ function HeaderRightContent() {
           className="cursor-pointer relative"
         >
           <ShoppingCart className="w-6 h-6" />
-          <span className="absolute top-[-5px] right-[2px] font-bold text-sm">{cartItems?.items?.length || '0'}</span>
+          <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
+            {cartItems?.items?.length || "0"}
+          </span>
           <span className="sr-only">User cart</span>
         </Button>
         <UserCartWrapper
@@ -135,6 +141,7 @@ function HeaderRightContent() {
 }
 
 function ShoppingHeader() {
+  const [openSheet, setOpenSheet] = useState(false); // NEW STATE
   useSelector((state) => state.auth);
 
   return (
@@ -149,7 +156,8 @@ function ShoppingHeader() {
             className="h-12 w-12 ml-2 object-contain rounded-full"
           />
         </Link>
-        <Sheet>
+
+        <Sheet open={openSheet} onOpenChange={setOpenSheet}>
           <SheetTrigger asChild>
             <Button
               variant="outline"
@@ -162,9 +170,10 @@ function ShoppingHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs p-4">
             <HeaderRightContent />
-            <MenuItems />
+            <MenuItems setOpenSheet={setOpenSheet} />
           </SheetContent>
         </Sheet>
+
         <div className="hidden lg:block">
           <MenuItems />
         </div>
