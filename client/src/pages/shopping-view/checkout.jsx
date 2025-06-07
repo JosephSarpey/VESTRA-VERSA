@@ -16,12 +16,10 @@ function ShoppingCheckout() {
   const [isPaymentStart, setIsPaymentStart] = useState(false);
   const dispatch = useDispatch();
 
-  console.log(currentSelectedAddress, "currentSelectedAddress");
-
-  // Calculate total
   const itemsArray = Array.isArray(cartItems)
     ? cartItems
     : cartItems?.items || [];
+
   const total = itemsArray
     .reduce(
       (sum, item) =>
@@ -33,27 +31,24 @@ function ShoppingCheckout() {
 
   function handleInitiatePaypalPayment() {
     if (itemsArray.length === 0) {
-      toast.error("Your cart is empty!. Please add item(s) to proceed");
+      toast.error("Your cart is empty! Please add item(s) to proceed.");
       return;
     }
 
     if (currentSelectedAddress === null) {
-      toast.error("Please Select An Address To Proceed");
+      toast.error("Please select an address to proceed.");
       return;
     }
 
     const orderData = {
       userId: user?.id,
       cartId: cartItems?._id,
-      cartItems: cartItems.items.map((singleCartItem) => ({
-        productId: singleCartItem?.productId,
-        title: singleCartItem?.title,
-        image: singleCartItem?.image,
-        price:
-          singleCartItem?.salePrice > 0
-            ? singleCartItem?.salePrice
-            : singleCartItem?.price,
-        quantity: singleCartItem?.quantity,
+      cartItems: cartItems.items.map((item) => ({
+        productId: item?.productId,
+        title: item?.title,
+        image: item?.image,
+        price: item?.salePrice > 0 ? item?.salePrice : item?.price,
+        quantity: item?.quantity,
       })),
       addressInfo: {
         addressId: currentSelectedAddress?._id,
@@ -88,40 +83,61 @@ function ShoppingCheckout() {
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="relative h-[500px] w-full overflow-hidden">
+    <div className="bg-gray-50 min-h-screen">
+      <div className="relative h-64 sm:h-80 md:h-96 w-full overflow-hidden rounded-b-xl shadow-md">
         <img
           src={img}
           className="h-full w-full object-cover object-center"
-          alt=""
+          alt="Checkout Banner"
         />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
-        <Address
-          selectedId={currentSelectedAddress}
-          setCurrentSelectedAddress={setCurrentSelectedAddress}
-        />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 px-4 sm:px-8 py-6 max-w-6xl mx-auto bg-white rounded-xl shadow-md">
+        {/* Address Selector */}
+        <div className="space-y-4">
+          <Address
+            selectedId={currentSelectedAddress}
+            setCurrentSelectedAddress={setCurrentSelectedAddress}
+          />
+
+          {currentSelectedAddress && (
+            <div className="text-green-600 font-medium flex items-center gap-2">
+              <span className="text-sm bg-green-100 px-3 py-1 rounded-full">
+                ✅ Address Selected
+              </span>
+              <span className="text-gray-700 text-sm">
+                ({currentSelectedAddress?.city}, {currentSelectedAddress?.country})
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Cart Items & Summary */}
         <div className="flex flex-col gap-4">
-          {cartItems && cartItems.items && cartItems.items.length > 0
-            ? cartItems.items.map((item) => (
-                <UserCartItemsContent cartItem={item} />
+          <div className="flex flex-col gap-4 max-h-96 overflow-y-auto pr-2">
+            {cartItems && cartItems.items && cartItems.items.length > 0 ? (
+              cartItems.items.map((item, index) => (
+                <UserCartItemsContent key={index} cartItem={item} />
               ))
-            : null}
-          {/* Total section */}
-          <div className="flex justify-between text-lg font-medium text-gray-800 border-t pt-4">
+            ) : (
+              <p className="text-gray-500 italic">No items in cart</p>
+            )}
+          </div>
+
+          <div className="flex justify-between items-center text-xl font-semibold text-gray-900 border-t pt-4 mt-2">
             <span>Total</span>
             <span>${total}</span>
           </div>
-          <div>
-            <Button
-              onClick={handleInitiatePaypalPayment}
-              className="mt-4 w-full"
-            >
-              {isPaymentStart
-                ? "Processing Payment..."
-                : "Click To Make Payment"}
-            </Button>
-          </div>
+
+          <Button
+            onClick={handleInitiatePaypalPayment}
+            className="mt-6 w-full py-3 text-lg font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow"
+          >
+            <span className="flex items-center justify-center gap-2">
+              <BiLogoPaypal className="text-2xl" />
+              {isPaymentStart ? "Processing..." : "Pay with PayPal"}
+            </span>
+          </Button>
         </div>
       </div>
     </div>

@@ -23,9 +23,11 @@ const initialAddressFormData = {
   notes: "",
 };
 
-function Address({setCurrentSelectedAddress, selectedId}) {
+function Address({ setCurrentSelectedAddress, selectedId: externalSelectedId }) {
   const [formData, setFormData] = useState(initialAddressFormData);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(externalSelectedId || null);
+
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shopAddress);
@@ -34,48 +36,41 @@ function Address({setCurrentSelectedAddress, selectedId}) {
     event.preventDefault();
 
     if (addressList.length >= 3 && currentEditedId === null) {
-      setFormData(initialAddressFormData)
-      toast.error('You can add a maximum of 3 addresses')
-
+      setFormData(initialAddressFormData);
+      toast.error("You can add a maximum of 3 addresses");
       return;
     }
 
-    currentEditedId !== null
-      ? dispatch(
-          editaAddress({
-            userId: user?.id,
-            addressId: currentEditedId,
-            formData,
-          })
-        ).then((data) => {
-          if (data?.payload.success) {
-            dispatch(fetchAllAddresses(user?.id));
-            setCurrentEditedId(null);
-            setFormData(initialAddressFormData);
-            toast.success(data?.payload.message)
-          }
+    const action = currentEditedId !== null
+      ? editaAddress({
+          userId: user?.id,
+          addressId: currentEditedId,
+          formData,
         })
-      : dispatch(
-          addNewAddress({
-            ...formData,
-            userId: user?.id,
-          })
-        ).then((data) => {
-          if (data?.payload.success) {
-            dispatch(fetchAllAddresses(user?.id));
-            toast.success(data?.payload.message);
-            setFormData(initialAddressFormData);
-          }
+      : addNewAddress({
+          ...formData,
+          userId: user?.id,
         });
+
+    dispatch(action).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchAllAddresses(user?.id));
+        setFormData(initialAddressFormData);
+        setCurrentEditedId(null);
+        toast.success(data?.payload?.message);
+      }
+    });
   }
 
   function handleDeleteAddress(getCurrentAddress) {
-    const toastId = Math.random().toString(36).substr(2, 9); // unique id for the toast
+    const toastId = Math.random().toString(36).substr(2, 9);
 
     toast(
       () => (
         <div>
-          <div>Are you sure you want to delete this address? This action cannot be undone!</div>
+          <div>
+            Are you sure you want to delete this address? This action cannot be undone!
+          </div>
           <div className="flex gap-2 mt-2">
             <button
               className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
@@ -89,6 +84,11 @@ function Address({setCurrentSelectedAddress, selectedId}) {
                   if (data?.payload?.success) {
                     dispatch(fetchAllAddresses(user?.id));
                     toast.success(data?.payload?.message);
+
+                    // Deselect if the deleted address was selected
+                    if (selectedId === getCurrentAddress._id) {
+                      setSelectedId(null);
+                    }
                   }
                 });
                 toast.dismiss(toastId);
@@ -123,12 +123,15 @@ function Address({setCurrentSelectedAddress, selectedId}) {
   }
 
   function isFormValid() {
-    return Object.keys(formData)
-      .map((key) => formData[key].trim() !== "")
-      .every((item) => item);
+    return Object.values(formData).every((value) => value.trim() !== "");
   }
 
-  console.log(addressList, "addressList");
+  function handleSelectAddress(address) {
+    setSelectedId(address._id);
+    if (setCurrentSelectedAddress) {
+      setCurrentSelectedAddress(address);
+    }
+  }
 
   useEffect(() => {
     dispatch(fetchAllAddresses(user?.id));
@@ -137,17 +140,16 @@ function Address({setCurrentSelectedAddress, selectedId}) {
   return (
     <Card>
       <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {addressList && addressList.length > 0
-          ? addressList.map((singleAddressItem) => (
-              <AddressCard
-               selectedId={selectedId}
-                handleDeleteAddress={handleDeleteAddress}
-                addressInfo={singleAddressItem}
-                handleEditAddress={handleEditAddress}
-                setCurrentSelectedAddress={setCurrentSelectedAddress}
-              />
-            ))
-          : null}
+        {addressList?.map((singleAddressItem) => (
+          <AddressCard
+            key={singleAddressItem._id}
+            selectedId={selectedId}
+            addressInfo={singleAddressItem}
+            handleDeleteAddress={handleDeleteAddress}
+            handleEditAddress={handleEditAddress}
+            setCurrentSelectedAddress={handleSelectAddress}
+          />
+        ))}
       </div>
       <CardHeader>
         <CardTitle>
