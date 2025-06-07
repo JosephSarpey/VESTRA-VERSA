@@ -20,16 +20,14 @@ function AddressCard({
           : null
       }
       className={`cursor-pointer relative border ${
-        isSelected
-          ? "border-red-900 border-4 bg-red-50 shadow-lg"
-          : "border-black"
+        isSelected ? "border-red-900 border-4 bg-red-50 shadow-lg" : "border-black"
       } transition-all duration-200`}
     >
       {isSelected && (
-        <div className="absolute top-2 right-2 bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full select-none flex items-center gap-1 shadow">
-          <span>✅</span> Address Selected
-        </div>
-      )}
+  <div className="absolute top-2 right-2 bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full select-none flex items-center gap-1 shadow">
+    <span>✅</span> Address Selected
+  </div>
+)}
 
       <CardContent className="grid p-4 gap-4">
         <Label>Country : {addressInfo?.country}</Label>
