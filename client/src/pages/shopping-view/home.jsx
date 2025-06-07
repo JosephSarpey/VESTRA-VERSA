@@ -31,12 +31,13 @@ const categoriesWithIcon = [
   { id: "preorder", label: "PreOrder", icon: LoaderPinwheel },
 ];
 
-
 // ... (imports stay unchanged)
 
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { productList, productDetails } = useSelector((state) => state.shopProducts);
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
   const { featureImageList } = useSelector((state) => state.commonFeature);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { user } = useSelector((state) => state.auth);
@@ -83,7 +84,12 @@ function ShoppingHome() {
   }, [featureImageList]);
 
   useEffect(() => {
-    dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: "price-lowtohigh" }));
+    dispatch(
+      fetchAllFilteredProducts({
+        filterParams: {},
+        sortParams: "price-lowtohigh",
+      })
+    );
     dispatch(getFeatureImages());
   }, [dispatch]);
 
@@ -91,38 +97,57 @@ function ShoppingHome() {
     <div className="flex flex-col min-h-screen">
       {/* Slideshow Banner */}
       <div className="relative w-full h-[600px] overflow-hidden">
-        {[...featureImageList, { type: "textSlide" }].map((slide, index) => (
+        {[...featureImageList, { type: "textSlide" }].map((slide, index) =>
           slide.type === "textSlide" ? (
             <div
               key="text-slide"
-              className={`absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black text-white text-center transition-opacity transform duration-1000 ${
-                index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105"
+              className={`absolute top-0 left-0 w-full h-full flex items-center justify-center transition-opacity transform duration-1000 ${
+                index === currentSlide
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-105"
               }`}
             >
-              <div className="z-20 px-4">
-                <h1 className="text-4xl md:text-6xl font-bold mb-4">Welcome to VESTRA VERSA</h1>
-                <p className="text-lg md:text-xl">Style. Simplicity. Delivered.</p>
-                <Button className="mt-6 px-6 py-3 text-lg">Start Shopping</Button>
+              {/* Gradient Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-yellow-400 opacity-90 blur-sm z-0" />
+              {/* Optional overlay glow effect */}
+              <div className="absolute inset-0 bg-white/10 backdrop-blur-sm z-10" />
+
+              {/* Text content */}
+              <div className="z-20 px-4 text-white text-center">
+                <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+                  Welcome to VESTRA VERSA
+                </h1>
+                <p className="text-lg md:text-xl drop-shadow-md">
+                  Style. Simplicity. Delivered.
+                </p>
+                <Button className="mt-6 px-6 py-3 text-lg bg-white text-black hover:bg-gray-100 shadow-md">
+                  Start Shopping
+                </Button>
               </div>
-              <div className="absolute inset-0 bg-black/40 z-10" />
             </div>
           ) : (
             <img
               key={index}
               src={slide?.image}
               alt={`slide-${index}`}
-              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity transform duration-1000 ${
-                index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105"
+              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity transform duration-3000 ${
+                index === currentSlide
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-105"
               }`}
             />
           )
-        ))}
+        )}
         {/* Navigation buttons */}
         <Button
           variant="outline"
           size="icon"
           onClick={() =>
-            setCurrentSlide((prev) => (prev - 1 + featureImageList.length + 1) % (featureImageList.length + 1))
+            setCurrentSlide(
+              (prev) =>
+                (prev - 1 + featureImageList.length + 1) %
+                (featureImageList.length + 1)
+            )
           }
           className="cursor-pointer absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80 z-30"
         >
@@ -131,7 +156,11 @@ function ShoppingHome() {
         <Button
           variant="outline"
           size="icon"
-          onClick={() => setCurrentSlide((prev) => (prev + 1) % (featureImageList.length + 1))}
+          onClick={() =>
+            setCurrentSlide(
+              (prev) => (prev + 1) % (featureImageList.length + 1)
+            )
+          }
           className="cursor-pointer absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 z-30"
         >
           <ChevronRightIcon className="w-4 h-4" />
@@ -153,7 +182,9 @@ function ShoppingHome() {
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
                   <item.icon className="w-12 h-12 mb-3 text-indigo-500" />
-                  <span className="font-semibold text-gray-800">{item.label}</span>
+                  <span className="font-semibold text-gray-800">
+                    {item.label}
+                  </span>
                 </CardContent>
               </Card>
             ))}
