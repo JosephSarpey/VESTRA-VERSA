@@ -100,7 +100,16 @@ function ShoppingCheckout() {
             setCurrentSelectedAddress={setCurrentSelectedAddress}
           />
 
-          
+          {currentSelectedAddress && (
+            <div className="text-green-600 font-medium flex items-center gap-2">
+              <span className="text-sm bg-green-100 px-3 py-1 rounded-full">
+                ✅ Address Selected
+              </span>
+              <span className="text-gray-700 text-sm">
+                ({currentSelectedAddress?.city}, {currentSelectedAddress?.country})
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Cart Items & Summary */}

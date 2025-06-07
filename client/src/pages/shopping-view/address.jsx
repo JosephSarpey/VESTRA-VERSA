@@ -1,4 +1,4 @@
-
+/* eslint-disable react-hooks/exhaustive-deps */
 import CommonForm from "@/components/common/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { addressFormControls } from "@/config";
@@ -23,9 +23,10 @@ const initialAddressFormData = {
   notes: "",
 };
 
-function Address({ setCurrentSelectedAddress, selectedId }) {
+function Address({ setCurrentSelectedAddress, selectedId: externalSelectedId }) {
   const [formData, setFormData] = useState(initialAddressFormData);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(externalSelectedId || null);
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -83,9 +84,10 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
                   if (data?.payload?.success) {
                     dispatch(fetchAllAddresses(user?.id));
                     toast.success(data?.payload?.message);
+
                     // Deselect if the deleted address was selected
-                    if (selectedId === getCurrentAddress._id && setCurrentSelectedAddress) {
-                      setCurrentSelectedAddress(null);
+                    if (selectedId === getCurrentAddress._id) {
+                      setSelectedId(null);
                     }
                   }
                 });
@@ -125,6 +127,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
   }
 
   function handleSelectAddress(address) {
+    setSelectedId(address._id);
     if (setCurrentSelectedAddress) {
       setCurrentSelectedAddress(address);
     }
@@ -132,7 +135,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
 
   useEffect(() => {
     dispatch(fetchAllAddresses(user?.id));
-  }, [dispatch, user?.id]);
+  }, [dispatch]);
 
   return (
     <Card>
