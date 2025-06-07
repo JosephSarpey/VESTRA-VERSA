@@ -26,8 +26,8 @@ const createOrder = async (req, res) => {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url: "http://localhost:5173/shop/paypal-return",
-        cancel_url: "http://localhost:5173/shop/paypal-cancel",
+        return_url: `${process.env.FRONTEND_URL}/shop/paypal-return`,
+        cancel_url: `${process.env.FRONTEND_URL}/shop/paypal-cancel`,
       },
       transactions: [
         {
@@ -160,7 +160,7 @@ const getAllOrdersByUser = async (req, res) => {
       });
     }
 
-     res.status(200).json({
+    res.status(200).json({
       success: true,
       data: orders,
     });

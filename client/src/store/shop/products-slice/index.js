@@ -18,7 +18,7 @@ export const fetchAllFilteredProducts = createAsyncThunk(
     });
 
     const result = await axios.get(
-      `http://localhost:5000/api/shop/products/get?${query}`
+      `https://vestra-versa.onrender.com/api/shop/products/get?${query}`
     );
 
     return result?.data;
@@ -29,7 +29,7 @@ export const fetchProductDetails = createAsyncThunk(
   "/products/fetchProductDetails",
   async (id) => {
     const result = await axios.get(
-      `http://localhost:5000/api/shop/products/get/${id}`
+      `https://vestra-versa.onrender.com/api/shop/products/get/${id}`
     );
 
     return result?.data;

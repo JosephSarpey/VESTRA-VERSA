@@ -10,7 +10,7 @@ export const getSearchResults = createAsyncThunk(
   "/shop/getSearchResults",
   async (keyword) => {
     const response = await axios.get(
-      `http://localhost:5000/api/shop/search/${keyword}`
+      `https://vestra-versa.onrender.com/api/shop/search/${keyword}`
     );
 
     return response.data;
