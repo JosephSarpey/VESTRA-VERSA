@@ -31,6 +31,9 @@ const categoriesWithIcon = [
   { id: "preorder", label: "PreOrder", icon: LoaderPinwheel },
 ];
 
+
+// ... (imports stay unchanged)
+
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { productList, productDetails } = useSelector((state) => state.shopProducts);
@@ -74,7 +77,7 @@ function ShoppingHome() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % featureImageList.length);
+      setCurrentSlide((prev) => (prev + 1) % (featureImageList.length + 1)); // +1 for text slide
     }, 3000);
     return () => clearInterval(timer);
   }, [featureImageList]);
@@ -88,25 +91,39 @@ function ShoppingHome() {
     <div className="flex flex-col min-h-screen">
       {/* Slideshow Banner */}
       <div className="relative w-full h-[600px] overflow-hidden">
-        {featureImageList?.map((slide, index) => (
-          <img
-            key={index}
-            src={slide?.image}
-            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity transform duration-1000 ${
-              index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105"
-            }`}
-          />
+        {[...featureImageList, { type: "textSlide" }].map((slide, index) => (
+          slide.type === "textSlide" ? (
+            <div
+              key="text-slide"
+              className={`absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black text-white text-center transition-opacity transform duration-1000 ${
+                index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105"
+              }`}
+            >
+              <div className="z-20 px-4">
+                <h1 className="text-4xl md:text-6xl font-bold mb-4">Welcome to VESTRA VERSA</h1>
+                <p className="text-lg md:text-xl">Style. Simplicity. Delivered.</p>
+                <Button className="mt-6 px-6 py-3 text-lg">Start Shopping</Button>
+              </div>
+              <div className="absolute inset-0 bg-black/40 z-10" />
+            </div>
+          ) : (
+            <img
+              key={index}
+              src={slide?.image}
+              alt={`slide-${index}`}
+              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity transform duration-1000 ${
+                index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105"
+              }`}
+            />
+          )
         ))}
-        <div className="absolute inset-0 bg-black/40 z-10"></div>
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-white text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">Welcome to Bhanksshopping</h1>
-          <p className="text-lg md:text-xl">Style. Simplicity. Delivered.</p>
-          <Button className="mt-6 px-6 py-3 text-lg">Start Shopping</Button>
-        </div>
+        {/* Navigation buttons */}
         <Button
           variant="outline"
           size="icon"
-          onClick={() => setCurrentSlide((prev) => (prev - 1 + featureImageList.length) % featureImageList.length)}
+          onClick={() =>
+            setCurrentSlide((prev) => (prev - 1 + featureImageList.length + 1) % (featureImageList.length + 1))
+          }
           className="cursor-pointer absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80 z-30"
         >
           <ChevronLeftIcon className="w-4 h-4" />
@@ -114,20 +131,20 @@ function ShoppingHome() {
         <Button
           variant="outline"
           size="icon"
-          onClick={() => setCurrentSlide((prev) => (prev + 1) % featureImageList.length)}
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % (featureImageList.length + 1))}
           className="cursor-pointer absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 z-30"
         >
           <ChevronRightIcon className="w-4 h-4" />
         </Button>
       </div>
 
-      {/* Category Section */}
-      <section className="py-16 bg-gray-50">
+      {/* Shop By Category */}
+      <section className="py-16 bg-gray-50 text-center">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 relative inline-block after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-12 after:h-1 after:bg-indigo-500 after:rounded-full">
+          <h2 className="text-3xl font-bold mb-12 relative inline-block after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-12 after:h-1 after:bg-indigo-500 after:rounded-full">
             Shop By Category
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 justify-center">
             {categoriesWithIcon.map((item) => (
               <Card
                 key={item.id}
@@ -145,12 +162,12 @@ function ShoppingHome() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-16">
+      <section className="py-16 text-center">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 relative inline-block after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-12 after:h-1 after:bg-indigo-500 after:rounded-full">
+          <h2 className="text-3xl font-bold mb-12 relative inline-block after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-12 after:h-1 after:bg-indigo-500 after:rounded-full">
             Featured Products
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center">
             {productList?.slice(0, 4).map((productItem) => (
               <ShoppingProductTile
                 key={productItem.id}
