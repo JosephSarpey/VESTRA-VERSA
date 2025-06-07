@@ -8,9 +8,6 @@ import { ShoppingCart, CheckCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch } from "react-redux";
-import { getReviews } from "@/store/shop/review-slice";
-import StarRatingComponent from "@/components/common/star-rating";
 
 function ShoppingProductTile({
   product,
@@ -22,10 +19,6 @@ function ShoppingProductTile({
   const isOutOfStock = product?.totalStock === 0;
   const isLowStock = product?.totalStock < 10;
   const isOnSale = product?.salePrice > 0;
-
-  const dispatch = useDispatch();
-  const [averageReview, setAverageReview] = useState(0);
-  const [hasReviews, setHasReviews] = useState(false);
 
   const handleCartClick = () => {
     if (!isOutOfStock) {
@@ -41,24 +34,6 @@ function ShoppingProductTile({
     }
     return () => clearTimeout(timeout);
   }, [added]);
-
-  useEffect(() => {
-    if (product?._id) {
-      dispatch(getReviews(product._id)).then((res) => {
-        const items = res?.payload || [];
-        if (items.length > 0) {
-          const avg =
-            items.reduce((sum, item) => sum + item.reviewValue, 0) /
-            items.length;
-          setAverageReview(avg);
-          setHasReviews(true);
-        } else {
-          setAverageReview(0);
-          setHasReviews(false);
-        }
-      });
-    }
-  }, [dispatch, product?._id]);
 
   return (
     <Card className="w-full max-w-sm mx-auto border border-gray-100 shadow-md rounded-2xl overflow-hidden transition-transform duration-300 hover:shadow-xl hover:scale-[1.02]">
@@ -139,22 +114,7 @@ function ShoppingProductTile({
                   </span>
                 )}
               </div>
-
-              {/* ⭐ Rating Display */}
-              <div className="flex items-center gap-1 mt-2">
-                {hasReviews ? (
-                  <>
-                    <StarRatingComponent rating={averageReview} />
-                    <span className="text-xs text-muted-foreground">
-                      ({averageReview.toFixed(2)})
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-sm text-gray-400 italic">
-                    No reviews yet
-                  </span>
-                )}
-              </div>
+              {/* Removed review/ratings display */}
             </>
           )}
         </CardContent>
