@@ -76,20 +76,24 @@ const loginUser = async (req, res) => {
         email: checkUser.email,
         userName: checkUser.userName,
       },
-      "CLIENT_SECRET_KEY",
+      process.env.JWT_SECRET,
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
-      success: true,
-      message: "Logged In Successfully",
-      user: {
-        email: checkUser.email,
-        role: checkUser.role,
-        id: checkUser._id,
-        userName: checkUser.userName,
-      },
-    });
+    res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,         // <-- must be true for HTTPS
+  sameSite: "none",     // <-- must be 'none' for cross-site cookies
+}).json({
+  success: true,
+  message: "Logged In Successfully",
+  user: {
+    email: checkUser.email,
+    role: checkUser.role,
+    id: checkUser._id,
+    userName: checkUser.userName,
+  },
+});
   } catch (e) {
     console.log(e);
     res.status(500).json({
@@ -101,12 +105,15 @@ const loginUser = async (req, res) => {
 
 // Logout user
 
-const logoutUser = (req, res) => {
-  res.clearCookie("token").json({
-    success: true,
-    message: "Logged out successfully",
-  });
-};
+const logoutUser = (req, res) => 
+  res.clearCookie("token", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+}).json({
+  success: true,
+  message: "Logged out successfully",
+});
 
 // Auth middleware
 const authMiddleware = async (req, res, next) => {
@@ -119,7 +126,7 @@ const authMiddleware = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
