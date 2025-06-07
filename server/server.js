@@ -56,6 +56,10 @@ app.use('/api/shop/review', shopeviewRouter);
 
 app.use('/api/common/feature', commonFeatureRouter);
 
+app.get("/", (req, res) => {
+  res.send("Vestra Versa API is running!");
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
