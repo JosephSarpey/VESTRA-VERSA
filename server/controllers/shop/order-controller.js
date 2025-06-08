@@ -35,65 +35,52 @@ const createOrder = async (req, res) => {
     const totalStr = Number(totalAmount).toFixed(2);
 
     // Build PayPal payment JSON
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
+    // ...existing code...
+const create_payment_json = {
+  intent: "sale",
+  payer: {
+    payment_method: "paypal",
+  },
+  redirect_urls: {
+    return_url: `${process.env.FRONTEND_URL}/shop/paypal-return`,
+    cancel_url: `${process.env.FRONTEND_URL}/shop/paypal-cancel`,
+  },
+  transactions: [
+    {
+      item_list: {
+        items: cartItems.map((item) => ({
+          name: item.title,
+          sku: item.productId,
+          price: Number(item.price).toFixed(2),
+          currency: "USD",
+          quantity: item.quantity,
+        })),
       },
-      redirect_urls: {
-        return_url: `${process.env.FRONTEND_URL}/shop/paypal-return`,
-        cancel_url: `${process.env.FRONTEND_URL}/shop/paypal-cancel`,
-      },
-      transactions: [
-        {
-          item_list: {
-            items: [
-              ...cartItems.map((item) => ({
-                name: item.title,
-                sku: item.productId,
-                price: Number(item.price).toFixed(2),
-                currency: "USD",
-                quantity: item.quantity,
-              })),
-              // Tax and shipping as separate items
-              {
-                name: "Tax",
-                sku: "tax",
-                price: taxStr,
-                currency: "USD",
-                quantity: 1,
-              },
-              {
-                name: "Shipping Fee",
-                sku: "shipping_fee",
-                price: shippingStr,
-                currency: "USD",
-                quantity: 1,
-              },
-            ],
-          },
-          amount: {
-            currency: "USD",
-            total: totalStr,
-            details: {
-              subtotal: subtotalStr,
-              tax: taxStr,
-              shipping: shippingStr,
-            },
-          },
-          description: "Order payment",
+      amount: {
+        currency: "USD",
+        total: totalStr,
+        details: {
+          subtotal: subtotalStr,
+          tax: taxStr,
+          shipping: shippingStr,
         },
-      ],
-    };
+      },
+      description: "Order payment",
+    },
+  ],
+};
+// ...existing code...
 
-    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).json({
-          success: false,
-          message: "Error while creating paypal payment",
-        });
-      } else {
+   paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
+  if (error) {
+    console.error("PayPal error details:", JSON.stringify(error.response || error, null, 2));
+    return res.status(500).json({
+      success: false,
+      message: "Error while creating paypal payment",
+      error: error.response || error,
+    });
+  }
+ else {
         const newlyCreatedOrder = new Order({
           userId,
           cartId,
