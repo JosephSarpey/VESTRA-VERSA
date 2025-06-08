@@ -23,6 +23,7 @@ import PayPalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import ShopPreOrder from "./pages/shopping-view/preorder";
 import SearchProducts from "./pages/shopping-view/search";
+import Loading from "@/components/common/Loading";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -34,7 +35,7 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  if (isLoading) return <Skeleton className="w-[800] bg-black h-[600px]" />;
+  if (isLoading) return <Loading message="Checking authentication..." />;
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
