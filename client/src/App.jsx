@@ -35,7 +35,7 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  if (isLoading) return <Loading message="Checking authentication..." />;
+  if (isLoading) return <Loading />;
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
