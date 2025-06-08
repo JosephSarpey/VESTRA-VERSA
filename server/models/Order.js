@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
-  userId: String, 
+  userId: String,
   cartId: String,
   cartItems: [
     {
@@ -25,6 +25,8 @@ const OrderSchema = new mongoose.Schema({
   paymentMethod: String,
   paymentStatus: String,
   totalAmount: Number,
+  taxAmount: { type: Number, default: 0 },
+  shippingFee: { type: Number, default: 0 },
   orderDate: Date,
   orderUpdateDate: Date,
   paymentId: String,

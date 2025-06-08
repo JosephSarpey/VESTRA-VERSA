@@ -13,6 +13,8 @@ const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus,
       totalAmount,
+      taxAmount = 0,
+      shippingFee = 0,
       orderDate,
       orderUpdateDate,
       paymentId,
@@ -20,6 +22,19 @@ const createOrder = async (req, res) => {
       cartId,
     } = req.body;
 
+    // Calculate subtotal from cart items (sum of item prices * quantity)
+    const subtotal = cartItems.reduce(
+      (sum, item) => sum + Number(item.price) * item.quantity,
+      0
+    );
+
+    // PayPal expects string numbers with 2 decimals
+    const subtotalStr = subtotal.toFixed(2);
+    const taxStr = Number(taxAmount).toFixed(2);
+    const shippingStr = Number(shippingFee).toFixed(2);
+    const totalStr = Number(totalAmount).toFixed(2);
+
+    // Build PayPal payment JSON
     const create_payment_json = {
       intent: "sale",
       payer: {
@@ -32,27 +47,48 @@ const createOrder = async (req, res) => {
       transactions: [
         {
           item_list: {
-            items: cartItems.map((item) => ({
-              name: item.title,
-              sku: item.productId,
-              price: Number(item.price).toFixed(2),
-              currency: "USD",
-              quantity: item.quantity,
-            })),
+            items: [
+              ...cartItems.map((item) => ({
+                name: item.title,
+                sku: item.productId,
+                price: Number(item.price).toFixed(2),
+                currency: "USD",
+                quantity: item.quantity,
+              })),
+              // Tax and shipping as separate items
+              {
+                name: "Tax",
+                sku: "tax",
+                price: taxStr,
+                currency: "USD",
+                quantity: 1,
+              },
+              {
+                name: "Shipping Fee",
+                sku: "shipping_fee",
+                price: shippingStr,
+                currency: "USD",
+                quantity: 1,
+              },
+            ],
           },
           amount: {
             currency: "USD",
-            total: Number(totalAmount).toFixed(2),
+            total: totalStr,
+            details: {
+              subtotal: subtotalStr,
+              tax: taxStr,
+              shipping: shippingStr,
+            },
           },
-          description: "description",
+          description: "Order payment",
         },
       ],
     };
 
     paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
       if (error) {
-        console.log();
-
+        console.error(error);
         return res.status(500).json({
           success: false,
           message: "Error while creating paypal payment",
@@ -67,6 +103,8 @@ const createOrder = async (req, res) => {
           paymentMethod,
           paymentStatus,
           totalAmount,
+          taxAmount,
+          shippingFee,
           orderDate,
           orderUpdateDate,
           paymentId,
@@ -87,13 +125,14 @@ const createOrder = async (req, res) => {
       }
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).json({
       success: false,
       message: "Some error occurred!",
     });
   }
 };
+
 
 const capturePayment = async (req, res) => {
   try {

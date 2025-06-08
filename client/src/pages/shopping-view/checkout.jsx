@@ -49,33 +49,38 @@ function ShoppingCheckout() {
     }
 
     const orderData = {
-      userId: user?.id,
-      cartId: cartItems?._id,
-      cartItems: cartItems.items.map((item) => ({
-        productId: item?.productId,
-        title: item?.title,
-        image: item?.image,
-        price: item?.salePrice > 0 ? item?.salePrice : item?.price,
-        quantity: item?.quantity,
-      })),
-      addressInfo: {
-        addressId: currentSelectedAddress?._id,
-        country: currentSelectedAddress?.country,
-        address: currentSelectedAddress?.address,
-        city: currentSelectedAddress?.city,
-        pincode: currentSelectedAddress?.pincode,
-        phone: currentSelectedAddress?.phone,
-        notes: currentSelectedAddress?.notes,
-      },
-      orderStatus: "pending",
-      paymentMethod: "paypal",
-      paymentStatus: "pending",
-      totalAmount: total,
-      orderDate: new Date(),
-      orderUpdateDate: new Date(),
-      paymentId: "",
-      payerId: "",
-    };
+  userId: user?.id,
+  cartId: cartItems?._id,
+  cartItems: cartItems.items.map((item) => ({
+    productId: item?.productId,
+    title: item?.title,
+    image: item?.image,
+    price: item?.salePrice > 0 ? item?.salePrice : item?.price,
+    quantity: item?.quantity,
+  })),
+  addressInfo: {
+    addressId: currentSelectedAddress?._id,
+    country: currentSelectedAddress?.country,
+    address: currentSelectedAddress?.address,
+    city: currentSelectedAddress?.city,
+    pincode: currentSelectedAddress?.pincode,
+    phone: currentSelectedAddress?.phone,
+    notes: currentSelectedAddress?.notes,
+  },
+  orderStatus: "pending",
+  paymentMethod: "paypal",
+  paymentStatus: "pending",
+  totalAmount: total,
+  orderDate: new Date(),
+  orderUpdateDate: new Date(),
+  paymentId: "",
+  payerId: "",
+
+  // Add these fields here to send tax and shipping info with the order:
+  taxAmount: tax,         // taxAmount as a number, e.g. 5.00
+  shippingFee: shippingFee,     // shippingFee as a number, e.g. 3.99
+};
+
 
     setIsPaymentStart(true);
     dispatch(createNewOrder(orderData)).then((data) => {
