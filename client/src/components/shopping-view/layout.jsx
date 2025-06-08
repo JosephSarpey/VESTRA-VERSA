@@ -13,4 +13,4 @@ function ShoppingLayout() {
     )   
 }
 
-export default ShoppingHeader;
+export default ShoppingLayout;
