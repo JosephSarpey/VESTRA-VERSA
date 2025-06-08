@@ -74,6 +74,7 @@ export const checkAuth = createAsyncThunk(
   }
 );
 
+// ...existing code...
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -82,32 +83,25 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(registerUser.pending, (state) => {
-        state.isLoading = true;
-      })
+      // Remove isLoading changes from registerUser
       .addCase(registerUser.fulfilled, (state) => {
-        state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
       })
       .addCase(registerUser.rejected, (state) => {
-        state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
       })
-      .addCase(loginUser.pending, (state) => {
-        state.isLoading = true;
-      })
+      // Remove isLoading changes from loginUser
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
       })
       .addCase(loginUser.rejected, (state) => {
-        state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
       })
+      // Only checkAuth controls isLoading
       .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
       })
@@ -122,12 +116,12 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-        state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
       });
   },
 });
+// ...existing code...
 
 export const { setUser } = authSlice.actions;
 export default authSlice.reducer;
