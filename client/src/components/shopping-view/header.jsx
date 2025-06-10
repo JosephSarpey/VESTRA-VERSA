@@ -1,13 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
-import {
-  House,
-  LogOut,
-  Menu,
-  ShoppingCart,
-  UserCheck,
-  Search,
-} from "lucide-react";
+import { House, LogOut, Menu, ShoppingCart, UserCheck, Search } from "lucide-react";
 import {
   Link,
   useLocation,
@@ -66,41 +58,23 @@ function MenuItems({ setOpenSheet }) {
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
-          className={`text-sm font-medium cursor-pointer transition-colors hover:text-primary ${
-            location.pathname.includes(menuItem.path) ? "text-primary" : "text-muted-foreground"
+          className={`text-sm font-medium cursor-pointer ${
+            location.pathname.includes(menuItem.path) ? "text-primary font-bold underline" : ""
           }`}
           key={menuItem.id}
         >
-          {menuItem.label}
+          {menuItem.label === "Search" ? (
+            <Search className="w-4 h-4 hover:scale-110 transition-transform duration-200 animate-pulse" />
+          ) : (
+            menuItem.label
+          )}
         </Label>
       ))}
     </nav>
   );
 }
 
-function SearchIconButton({ setOpenSheet }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => {
-        if (setOpenSheet) setOpenSheet(false);
-        navigate("/shop/search");
-      }}
-      className={`group hover:bg-transparent transition-transform duration-300 transform hover:scale-110 ${
-        location.pathname.includes("search") ? "text-primary" : "text-muted-foreground"
-      }`}
-    >
-      <Search className="w-5 h-5 group-hover:animate-pulse" />
-      <span className="sr-only">Search</span>
-    </Button>
-  );
-}
-
-function HeaderRightContent({ setOpenSheet }) {
+function HeaderRightContent({ onCloseSheet }) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const [openCartSheet, setOpenCartSheet] = useState(false);
@@ -109,26 +83,33 @@ function HeaderRightContent({ setOpenSheet }) {
 
   function handleLogout() {
     dispatch(logoutUser());
-    if (setOpenSheet) setOpenSheet(false);
+    onCloseSheet?.();
+  }
+
+  function handleCartClick() {
+    setOpenCartSheet(true);
+    onCloseSheet?.();
+  }
+
+  function handleAccountClick() {
+    navigate("/shop/account");
+    onCloseSheet?.();
   }
 
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
-  }, [dispatch]);
+  }, [dispatch, user?.id]);
 
   return (
-    <div className="flex items-center gap-4">
-      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+    <div className="flex lg:items-center lg:flex-row flex-col gap-4">
+      <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
         <Button
-          onClick={() => {
-            setOpenCartSheet(true);
-            if (setOpenSheet) setOpenSheet(false);
-          }}
+          onClick={handleCartClick}
           variant="outline"
           size="icon"
           className="cursor-pointer relative"
         >
-          <ShoppingCart className="w-6 h-6 animate-bounce" />
+          <ShoppingCart className="w-6 h-6 animate-bounce transition-all duration-300" />
           <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
             {cartItems?.items?.length || "0"}
           </span>
@@ -155,13 +136,7 @@ function HeaderRightContent({ setOpenSheet }) {
         <DropdownMenuContent side="right" className="w-56">
           <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => {
-              navigate("/shop/account");
-              if (setOpenSheet) setOpenSheet(false);
-            }}
-          >
+          <DropdownMenuItem className="cursor-pointer" onClick={handleAccountClick}>
             <UserCheck className="mr-2 h-4 w-4" />
             Account
           </DropdownMenuItem>
@@ -205,19 +180,18 @@ function ShoppingHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <HeaderRightContent setOpenSheet={setOpenSheet} />
-            </div>
-            <div className="flex justify-start">
-              <SearchIconButton setOpenSheet={setOpenSheet} />
+            <div className="flex justify-start gap-4">
+              <HeaderRightContent onCloseSheet={() => setOpenSheet(false)} />
             </div>
             <MenuItems setOpenSheet={setOpenSheet} />
           </SheetContent>
         </Sheet>
 
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:block">
           <MenuItems />
-          <SearchIconButton />
+        </div>
+
+        <div className="hidden lg:block">
           <HeaderRightContent />
         </div>
       </div>
