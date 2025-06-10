@@ -84,8 +84,8 @@ const loginUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,         // <-- must be true for HTTPS
-      sameSite: "none",     // <-- must be 'none' for cross-site cookies
+      secure: true,         
+      sameSite: "none",     
     }).json({
       success: true,
       message: "Logged In Successfully",
@@ -144,10 +144,13 @@ const resetPassword = async (req, res) => {
   });
   if (!user) return res.status(400).json({ message: 'Invalid or expired token.' });
 
-  user.password = password; // Make sure you hash this in your pre-save hook!
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpires = undefined;
-  await user.save();
+  const bcrypt = require("bcryptjs");
+// ...inside resetPassword
+const hashPassword = await bcrypt.hash(password, 12);
+user.password = hashPassword;
+user.resetPasswordToken = undefined;
+user.resetPasswordExpires = undefined;
+await user.save();
 
   res.json({ message: 'Password has been reset.' });
 };
