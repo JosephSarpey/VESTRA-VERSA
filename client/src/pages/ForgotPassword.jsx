@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { MailIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -65,7 +66,7 @@ function ForgotPassword() {
           )}
         </form>
         <div className="text-center text-sm text-gray-600 mt-6">
-          <a href="/login" className="underline hover:text-indigo-600">Back to Login</a>
+          <Link to="/auth/login" className="underline hover:text-indigo-600">Back to Login</Link>
         </div>
       </motion.div>
     </div>

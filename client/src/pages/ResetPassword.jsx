@@ -99,7 +99,7 @@ function ResetPassword() {
           )}
         </form>
         <div className="text-center text-sm text-gray-600 mt-6">
-          <a href="/login" className="underline hover:text-indigo-600">Return to Login</a>
+          <Link to="/auth/login" className="underline hover:text-indigo-600">Return to Login</Link>
         </div>
       </motion.div>
     </div>
