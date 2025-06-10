@@ -1,15 +1,17 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 
-function ForgotPassword() {
-  const [email, setEmail] = useState("");
+function ResetPassword() {
+  const { token } = useParams();
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/auth/request-password-reset", {
+    const res = await fetch(`/api/auth/reset-password/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ password }),
     });
     const data = await res.json();
     setMessage(data.message);
@@ -17,18 +19,18 @@ function ForgotPassword() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Forgot Password</h2>
+      <h2>Reset Password</h2>
       <input
-        type="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
+        type="password"
+        placeholder="Enter new password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
         required
       />
-      <button type="submit">Send Reset Link</button>
+      <button type="submit">Reset Password</button>
       {message && <p>{message}</p>}
     </form>
   );
 }
 
-export default ForgotPassword;
+export default ResetPassword;

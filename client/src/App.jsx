@@ -23,6 +23,8 @@ import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import ShopPreOrder from "./pages/shopping-view/preorder";
 import SearchProducts from "./pages/shopping-view/search";
 import Loading from "@/components/common/Loading";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
