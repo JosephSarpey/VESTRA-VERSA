@@ -26,7 +26,8 @@ import { fetchCartItems } from "@/store/shop/cart-slice";
 import logo from "../../assets/vv_logo.jpg";
 import { Label } from "../ui/label";
 
-function MenuItems({ setOpenSheet }) {
+// MenuItems component
+function MenuItems({ setOpenSheet, activePath }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,46 +55,31 @@ function MenuItems({ setOpenSheet }) {
   }
 
   return (
-    <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
+    <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-4 lg:flex-row">
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
-          className={`text-sm font-medium cursor-pointer ${
-            location.pathname.includes(menuItem.path) ? "text-primary font-bold underline" : ""
+          className={`text-sm font-medium cursor-pointer transition-colors duration-150 ${
+            activePath === menuItem.path ? "font-bold text-foreground" : "text-muted-foreground"
           }`}
           key={menuItem.id}
         >
-          {menuItem.label === "Search" ? (
-            <Search className="w-4 h-4 hover:scale-110 transition-transform duration-200 animate-pulse" />
-          ) : (
-            menuItem.label
-          )}
+          {menuItem.label}
         </Label>
       ))}
     </nav>
   );
 }
 
-function HeaderRightContent({ onCloseSheet }) {
+// HeaderRightContent component (no cart state here)
+function HeaderRightContent({ onCartClick }) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
-  const [openCartSheet, setOpenCartSheet] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   function handleLogout() {
     dispatch(logoutUser());
-    onCloseSheet?.();
-  }
-
-  function handleCartClick() {
-    setOpenCartSheet(true);
-    
-  }
-
-  function handleAccountClick() {
-    navigate("/shop/account");
-    onCloseSheet?.();
   }
 
   useEffect(() => {
@@ -101,29 +87,18 @@ function HeaderRightContent({ onCloseSheet }) {
   }, [dispatch, user?.id]);
 
   return (
-    <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
-        <Button
-          onClick={handleCartClick}
-          variant="outline"
-          size="icon"
-          className="cursor-pointer relative"
-        >
-          <ShoppingCart className="w-6 h-6 animate-bounce transition-all duration-300" />
-          <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
-            {cartItems?.items?.length || "0"}
-          </span>
-          <span className="sr-only">User cart</span>
-        </Button>
-        <UserCartWrapper
-          setOpenCartSheet={setOpenCartSheet}
-          cartItems={
-            cartItems && cartItems.items && cartItems.items.length > 0
-              ? cartItems.items
-              : []
-          }
-        />
-      </Sheet>
+    <div className="flex items-center gap-4">
+      <Button
+        onClick={onCartClick}
+        variant="outline"
+        size="icon"
+        className="cursor-pointer relative animate-bounce"
+      >
+        <ShoppingCart className="w-6 h-6" />
+        <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
+          {cartItems?.items?.length || "0"}
+        </span>
+      </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -136,7 +111,10 @@ function HeaderRightContent({ onCloseSheet }) {
         <DropdownMenuContent side="right" className="w-56">
           <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer" onClick={handleAccountClick}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => navigate("/shop/account")}
+          >
             <UserCheck className="mr-2 h-4 w-4" />
             Account
           </DropdownMenuItem>
@@ -151,9 +129,12 @@ function HeaderRightContent({ onCloseSheet }) {
   );
 }
 
+// ShoppingHeader component (single source of cart state)
 function ShoppingHeader() {
   const [openSheet, setOpenSheet] = useState(false);
-  useSelector((state) => state.auth);
+  const [openCartSheet, setOpenCartSheet] = useState(false);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const location = useLocation();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -168,6 +149,7 @@ function ShoppingHeader() {
           />
         </Link>
 
+        {/* Mobile Menu Sheet */}
         <Sheet open={openSheet} onOpenChange={setOpenSheet}>
           <SheetTrigger asChild>
             <Button
@@ -180,21 +162,49 @@ function ShoppingHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs p-4 space-y-4">
-            <div className="flex justify-start gap-4">
-              <HeaderRightContent onCloseSheet={() => setOpenSheet(false)} />
+            <div className="flex gap-4">
+              <HeaderRightContent onCartClick={() => setOpenCartSheet(true)} />
             </div>
-            <MenuItems setOpenSheet={setOpenSheet} />
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2 animate-pulse"
+              onClick={() => {
+                setOpenCartSheet(true);
+                setOpenSheet(false);
+              }}
+            >
+              <Search className="h-5 w-5" />
+              <span>Search</span>
+            </Button>
+            <MenuItems setOpenSheet={setOpenSheet} activePath={location.pathname} />
           </SheetContent>
         </Sheet>
 
-        <div className="hidden lg:block">
-          <MenuItems />
-        </div>
-
-        <div className="hidden lg:block">
-          <HeaderRightContent />
+        {/* Desktop Menu */}
+        <div className="hidden lg:flex items-center gap-6">
+          <MenuItems activePath={location.pathname} />
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 animate-pulse"
+            onClick={() => setOpenCartSheet(true)}
+          >
+            <Search className="h-5 w-5" />
+          </Button>
+          <HeaderRightContent onCartClick={() => setOpenCartSheet(true)} />
         </div>
       </div>
+
+      {/* Cart Sheet - only one instance */}
+      <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
+        <UserCartWrapper
+          setOpenCartSheet={setOpenCartSheet}
+          cartItems={
+            cartItems && cartItems.items && cartItems.items.length > 0
+              ? cartItems.items
+              : []
+          }
+        />
+      </Sheet>
     </header>
   );
 }
