@@ -72,7 +72,7 @@ function MenuItems({ setOpenSheet, activePath }) {
 }
 
 // HeaderRightContent component (no cart state here)
-function HeaderRightContent({ onCartClick }) {
+function HeaderRightContent({ onCartClick, onCloseMenu }) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const navigate = useNavigate();
@@ -80,6 +80,7 @@ function HeaderRightContent({ onCartClick }) {
 
   function handleLogout() {
     dispatch(logoutUser());
+    if (onCloseMenu) onCloseMenu();
   }
 
   useEffect(() => {
@@ -89,7 +90,10 @@ function HeaderRightContent({ onCartClick }) {
   return (
     <div className="flex items-center gap-4">
       <Button
-        onClick={onCartClick}
+        onClick={() => {
+          onCartClick();
+          if (onCloseMenu) onCloseMenu();
+        }}
         variant="outline"
         size="icon"
         className="cursor-pointer relative animate-bounce"
@@ -113,7 +117,10 @@ function HeaderRightContent({ onCartClick }) {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => navigate("/shop/account")}
+            onClick={() => {
+              navigate("/shop/account");
+              if (onCloseMenu) onCloseMenu();
+            }}
           >
             <UserCheck className="mr-2 h-4 w-4" />
             Account
@@ -135,6 +142,7 @@ function ShoppingHeader() {
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const { cartItems } = useSelector((state) => state.shopCart);
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -163,13 +171,16 @@ function ShoppingHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs p-4 space-y-4">
             <div className="flex gap-4">
-              <HeaderRightContent onCartClick={() => setOpenCartSheet(true)} />
+              <HeaderRightContent
+                onCartClick={() => setOpenCartSheet(true)}
+                onCloseMenu={() => setOpenSheet(false)}
+              />
             </div>
             <Button
               variant="ghost"
               className="flex items-center gap-2 animate-pulse"
               onClick={() => {
-                setOpenCartSheet(true);
+                navigate("/shop/search");
                 setOpenSheet(false);
               }}
             >
