@@ -18,7 +18,9 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "user",
-  }
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 const User = mongoose.model("User", UserSchema);

@@ -50,6 +50,7 @@ function AuthLogin() {
       {loading ? (
         <Loading message="Logging you in..." />
       ) : (
+        <>
         <CommonForm 
           formControls={loginFormControls}
           formData={formData}
@@ -62,6 +63,12 @@ function AuthLogin() {
           setFormData={setFormData}
           onSubmit={onSubmit}
         />
+        <p className="text-right mt-2">
+          <Link className="text-sm text-primary hover:underline" to="/forgot-password">
+            Forgot Password?
+          </Link>
+        </p>
+      </>
       )}
     </div>
   );
