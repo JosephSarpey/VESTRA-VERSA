@@ -102,14 +102,14 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
 
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent className="p-4 sm:p-6 md:p-8 max-w-[95vw] sm:max-w-[90vw] md:max-w-[800px] lg:max-w-[900px]">
-        <DialogTitle className="text-lg font-semibold mb-4 sm:hidden">
+      <DialogContent className="p-4 sm:p-6 md:p-8 max-w-[95vw] sm:max-w-[90vw] md:max-w-[800px] lg:max-w-[900px] max-h-[90vh] overflow-y-auto">
+        <DialogTitle className="text-lg font-semibold mb-4 sm:hidden break-words">
           {productDetails.title || "Product Details"}
         </DialogTitle>
 
         <div className="flex flex-col sm:flex-row gap-6">
           {/* Image Section */}
-          <div className="flex-shrink-0 w-full sm:w-1/2">
+          <div className="flex-shrink-0 w-full sm:w-1/2 min-w-0">
             {productDetails.image ? (
               <img
                 src={productDetails.image}
@@ -117,53 +117,35 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 className="w-full h-auto rounded-lg object-cover aspect-square"
               />
             ) : (
-              <div className="w-full aspect-square bg-gray-200 flex items-center justify-center rounded-lg">
+              <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
                 No Image
               </div>
             )}
           </div>
 
-          {/* Details Section */}
-          <div className="flex flex-col w-full sm:w-1/2 justify-between">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-              {productDetails.title}
-            </h2>
-            <p className=" text-xl text-muted-foreground mb-5">
-              {productDetails.description || "No description available."}
-            </p>
-
-            <div className="flex items-center gap-4 mt-auto">
-              <p
-                className={`text-xl font-semibold ${
-                  productDetails.salePrice > 0
-                    ? "line-through text-red-500"
-                    : "text-primary"
-                }`}
-              >
+          {/* Product Info & Actions */}
+          <div className="flex-1 min-w-0 flex flex-col gap-4">
+            <DialogTitle className="text-2xl font-bold mb-2 hidden sm:block break-words">
+              {productDetails.title || "Product Details"}
+            </DialogTitle>
+            <div className="text-muted-foreground break-words">{productDetails.description}</div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-semibold text-primary">
                 ${productDetails.price}
-              </p>
-              {productDetails.salePrice > 0 && (
-                <p className="text-xl font-bold text-green-600">
-                  ${productDetails.salePrice}
-                </p>
-              )}
-            </div>
-
-            {/* Star Rating */}
-            <div className="flex items-center gap-2 mt-2">
-              <div className="flex items-center gap-0.5">
-                <StarRatingComponent rating={averageReview} />
-              </div>
-              <span className="text-muted-foreground">
-                ({averageReview.toFixed(2)})
+              </span>
+              <span className="text-sm text-gray-500">
+                ({productDetails.totalStock > 0 ? "In Stock" : "Out Of Stock"})
               </span>
             </div>
-
-            {/* Add to Cart */}
-            <div className="mt-5 mb-5">
-              {productDetails?.totalStock === 0 ? (
-                <Button className="w-full opacity-60 cursor-not-allowed">
-                  <ShoppingCart className="w-4 h-4" />
+            <div className="flex items-center gap-2">
+              <StarRatingComponent rating={averageReview} />
+              <span className="text-sm text-gray-500">
+                ({reviews?.length || 0} reviews)
+              </span>
+            </div>
+            <div>
+              {productDetails.totalStock === 0 ? (
+                <Button className="w-full" disabled>
                   Out Of Stock
                 </Button>
               ) : (
@@ -228,7 +210,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                         <div className="flex items-center gap-0.5">
                           <StarRatingComponent rating={reviewItem?.reviewValue} />
                         </div>
-                        <p className="text-muted-foreground">
+                        <p className="text-muted-foreground break-words">
                           {reviewItem.reviewMessage}
                         </p>
                       </div>

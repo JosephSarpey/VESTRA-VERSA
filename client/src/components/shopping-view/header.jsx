@@ -36,11 +36,11 @@ function MenuItems({ setOpenSheet, activePath }) {
     sessionStorage.removeItem("filters");
     const currentFilter =
       getCurrentMenuItem.id !== "home" &&
-      getCurrentMenuItem.id !== "products" &&
-      getCurrentMenuItem.id !== "search"
+        getCurrentMenuItem.id !== "products" &&
+        getCurrentMenuItem.id !== "search"
         ? {
-            category: [getCurrentMenuItem.id],
-          }
+          category: [getCurrentMenuItem.id],
+        }
         : null;
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
@@ -59,9 +59,8 @@ function MenuItems({ setOpenSheet, activePath }) {
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
-          className={`text-sm font-medium cursor-pointer transition-colors duration-150 ${
-            activePath === menuItem.path ? "font-bold text-foreground" : "text-muted-foreground"
-          }`}
+          className={`text-sm font-medium cursor-pointer transition-colors duration-150 ${activePath === menuItem.path ? "font-bold text-foreground" : "text-muted-foreground"
+            }`}
           key={menuItem.id}
         >
           {menuItem.label}
@@ -197,7 +196,7 @@ function ShoppingHeader() {
           <Button
             variant="ghost"
             className="flex items-center gap-2 animate-pulse"
-            onClick={() => setOpenCartSheet(true)}
+            onClick={() => navigate("/shop/search")}
           >
             <Search className="h-5 w-5" />
           </Button>
