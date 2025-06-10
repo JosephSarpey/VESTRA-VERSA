@@ -24,7 +24,7 @@ function AuthRegister() {
     event.preventDefault();
 
     if (!formData.userName || !formData.email || !formData.password) {
-      toast.error("Username, email, and password are required.");
+      toast.error("Username, email, and password are required to register.");
       return;
     }
 
@@ -41,21 +41,26 @@ function AuthRegister() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-black">Create New Account</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Already have an account?
-            <Link className="ml-2 text-[#FFD700] font-medium hover:underline" to="/auth/login">
-              Login
-            </Link>
-          </p>
-        </div>
+    <div className="mx-auto w-full max-w-md space-y-6">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold tracking-tight text-black">
+          Create New Account
+        </h1>
+        <p className="mt-2 text-sm text-gray-600">
+          Already have an account?
+          <Link
+            className="font-medium ml-2 text-[#FFD700] hover:underline"
+            to="/auth/login"
+          >
+            Login
+          </Link>
+        </p>
+      </div>
 
-        {loading ? (
-          <Loading message="Creating your account..." />
-        ) : (
+      {loading ? (
+        <Loading message="Creating your account..." />
+      ) : (
+        <>
           <CommonForm
             formControls={registerFormControls}
             formData={formData}
@@ -68,8 +73,15 @@ function AuthRegister() {
             setFormData={setFormData}
             onSubmit={onSubmit}
           />
-        )}
-      </div>
+
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Need help?{" "}
+            <Link to="/contact" className="text-[#FFD700] hover:underline">
+              Contact Support
+            </Link>
+          </p>
+        </>
+      )}
     </div>
   );
 }
