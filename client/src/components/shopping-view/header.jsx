@@ -88,7 +88,7 @@ function HeaderRightContent({ onCloseSheet }) {
 
   function handleCartClick() {
     setOpenCartSheet(true);
-    onCloseSheet?.();
+    
   }
 
   function handleAccountClick() {
