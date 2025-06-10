@@ -27,56 +27,59 @@ function AuthLogin() {
       if (data?.payload?.success) {
         toast.success(data?.payload?.message);
       } else {
-        toast.error(data?.payload?.message || "Login failed");
+        toast.error(data?.payload?.message || 'Login failed');
       }
     });
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-black">Login to Your Account</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Don’t have an account?
-            <Link className="ml-2 text-[#FFD700] font-medium hover:underline" to="/auth/register">
-              Register Now
+    <div className="mx-auto w-full max-w-md space-y-6">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold tracking-tight text-black">
+          Login to Your Account
+        </h1>
+        <p className="mt-2 text-sm text-gray-600">
+          Don't have an account?
+          <Link
+            className="font-medium ml-2 text-[#FFD700] hover:underline"
+            to="/auth/register"
+          >
+            Register Now
+          </Link>
+        </p>
+      </div>
+
+      {loading ? (
+        <Loading message="Logging you in..." />
+      ) : (
+        <>
+          <CommonForm
+            formControls={loginFormControls}
+            formData={formData}
+            buttonText={
+              <span className="flex items-center gap-2">
+                <BiLogIn />
+                Log In
+              </span>
+            }
+            setFormData={setFormData}
+            onSubmit={onSubmit}
+          />
+
+          <div className="flex justify-between items-center mt-2 text-sm text-gray-600">
+            <Link to="/forgot-password" className="hover:underline text-[#FFD700]">
+              Forgot Password?
+            </Link>
+          </div>
+
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Need help?{" "}
+            <Link to="/contact" className="text-[#FFD700] hover:underline">
+              Contact Support
             </Link>
           </p>
-        </div>
-
-        {loading ? (
-          <Loading message="Logging you in..." />
-        ) : (
-          <>
-            <CommonForm
-              formControls={loginFormControls}
-              formData={formData}
-              buttonText={
-                <span className="flex items-center gap-2">
-                  <BiLogIn />
-                  Log In
-                </span>
-              }
-              setFormData={setFormData}
-              onSubmit={onSubmit}
-            />
-
-            <p className="text-right text-sm">
-              <Link to="/forgot-password" className="text-[#FFD700] hover:underline">
-                Forgot Password?
-              </Link>
-            </p>
-            <p className="text-center text-sm text-gray-600 mt-6">
-  Need help?{" "}
-  <Link to="/contact" className="text-[#FFD700] hover:underline">
-    Contact Support
-  </Link>
-</p>
-
-          </>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }
