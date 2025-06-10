@@ -83,19 +83,19 @@ const loginUser = async (req, res) => {
     );
 
     res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,         // <-- must be true for HTTPS
-  sameSite: "none",     // <-- must be 'none' for cross-site cookies
-}).json({
-  success: true,
-  message: "Logged In Successfully",
-  user: {
-    email: checkUser.email,
-    role: checkUser.role,
-    id: checkUser._id,
-    userName: checkUser.userName,
-  },
-});
+      httpOnly: true,
+      secure: true,         // <-- must be true for HTTPS
+      sameSite: "none",     // <-- must be 'none' for cross-site cookies
+    }).json({
+      success: true,
+      message: "Logged In Successfully",
+      user: {
+        email: checkUser.email,
+        role: checkUser.role,
+        id: checkUser._id,
+        userName: checkUser.userName,
+      },
+    });
   } catch (e) {
     console.log(e);
     res.status(500).json({
@@ -107,15 +107,15 @@ const loginUser = async (req, res) => {
 
 // Logout user
 
-const logoutUser = (req, res) => 
+const logoutUser = (req, res) =>
   res.clearCookie("token", {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-}).json({
-  success: true,
-  message: "Logged out successfully",
-});
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  }).json({
+    success: true,
+    message: "Logged out successfully",
+  });
 
 // Request password reset
 exports.requestPasswordReset = async (req, res) => {
@@ -174,4 +174,7 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
+module.exports = {
+  registerUser, loginUser, logoutUser, authMiddleware, requestPasswordReset,
+  resetPassword
+};
