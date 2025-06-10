@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { FiUserPlus } from "react-icons/fi";
-import Loading from "@/components/common/Loading"; // <-- Import Loading
+import Loading from "@/components/common/Loading"; 
 
 const initialState = {
   userName: "",

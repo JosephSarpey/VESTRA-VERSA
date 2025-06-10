@@ -16,22 +16,19 @@ const initialState = {
 function AuthLogin() {
 
   const [formData, setFormData] = useState(initialState);
-  const [loading, setLoading] = useState(false); // <-- Add loading state
+  const [loading, setLoading] = useState(false); 
   const dispatch = useDispatch();
 
   function onSubmit(event) {
     event.preventDefault();
-    setLoading(true); // <-- Start loading
-
+    setLoading(true);
+  
     dispatch(loginUser(formData)).then((data) => {
-      setLoading(false); // <-- Stop loading
+      setLoading(false);
       if (data?.payload?.success) {
-        toast.success(
-           data?.payload?.message,
-        );
-      } else{
-        toast.error('Email and password are required'
-        );
+        toast.success(data?.payload?.message);
+      } else {
+        toast.error(data?.payload?.message || 'Login failed');
       }
     });
   }
