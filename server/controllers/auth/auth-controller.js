@@ -118,7 +118,7 @@ const logoutUser = (req, res) =>
   });
 
 // Request password reset
-exports.requestPasswordReset = async (req, res) => {
+const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) return res.status(400).json({ message: 'No user with that email.' });
@@ -135,7 +135,7 @@ exports.requestPasswordReset = async (req, res) => {
 };
 
 // Reset password
-exports.resetPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
   const user = await User.findOne({
