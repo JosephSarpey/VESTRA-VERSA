@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 const crypto = require('crypto');
 const { sendResetEmail } = require('../../helpers/email');
+const { sendOtpEmail } = require('../../helpers/sendOtpEmail');
 
 // register user
 const registerUser = async (req, res) => {
@@ -27,13 +28,20 @@ const registerUser = async (req, res) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 12);
-    const newUser = new User({
-      userName,
-      email,
-      password: hashPassword,
-    });
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+
+const newUser = new User({
+  userName,
+  email,
+  password: hashPassword,
+  activationOtp: otp,
+  activationOtpExpires: otpExpiry,
+  isActivated: false,
+});
 
     await newUser.save();
+    await sendOtpEmail(email, otp);
     res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -47,6 +55,33 @@ const registerUser = async (req, res) => {
   }
 };
 
+// Verify OTP
+const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(400).json({ message: "User not found." });
+  }
+  if (user.isActivated) {
+    return res.status(400).json({ message: "Account already activated." });
+  }
+  if (
+    user.activationOtp !== otp ||
+    !user.activationOtpExpires ||
+    user.activationOtpExpires < new Date()
+  ) {
+    return res.status(400).json({ message: "Invalid or expired OTP." });
+  }
+
+  user.isActivated = true;
+  user.activationOtp = undefined;
+  user.activationOtpExpires = undefined;
+  await user.save();
+
+  res.json({ message: "Account activated successfully!" });
+};
+
 // Login user
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -57,6 +92,12 @@ const loginUser = async (req, res) => {
       return res.json({
         success: false,
         message: "User doesn't exist! Please Register first",
+      });
+    }
+    if (!checkUser.isActivated) {
+      return res.status(403).json({
+        success: false,
+        message: "Account not activated. Please check your email for the OTP.",
       });
     }
 
@@ -179,5 +220,5 @@ const authMiddleware = async (req, res, next) => {
 
 module.exports = {
   registerUser, loginUser, logoutUser, authMiddleware, requestPasswordReset,
-  resetPassword
+  resetPassword, verifyOtp
 };

@@ -25,6 +25,7 @@ import SearchProducts from "./pages/shopping-view/search";
 import Loading from "@/components/common/Loading";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import OtpActivation from './components/auth/OtpActivation';
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -52,6 +53,7 @@ function App() {
         />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/activate" element={<OtpActivation />} />
         <Route
           path="/auth"
           element={

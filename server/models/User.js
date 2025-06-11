@@ -21,6 +21,9 @@ const UserSchema = new mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+  activationOtp: String,
+  activationOtpExpires: Date,
+  isActivated: { type: Boolean, default: false },
 });
 
 const User = mongoose.model("User", UserSchema);

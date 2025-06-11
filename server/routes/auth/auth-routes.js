@@ -6,6 +6,7 @@ const {
   authMiddleware,
   requestPasswordReset,
   resetPassword,
+  verifyOtp 
 } = require("../../controllers/auth/auth-controller");
 
 const router = express.Router();
@@ -27,5 +28,7 @@ router.get("/check-auth", authMiddleware, (req, res) => {
 
 router.post("/request-password-reset", requestPasswordReset);
 router.post("/reset-password/:token", resetPassword);
+
+router.post("/verify-otp", verifyOtp);
 
 module.exports = router;
