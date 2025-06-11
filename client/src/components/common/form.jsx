@@ -11,7 +11,7 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
-      {formControls.map((control) => {
+      {(Array.isArray(formControls) ? formControls : []).map((control) => {
         const { name, label, type, placeholder, componentType, options } = control;
 
         return (
@@ -70,7 +70,7 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD700]"
               >
                 <option value="">Select...</option>
-                {options.map((option) => (
+                {(Array.isArray(options) ? options : []).map((option) => (
                   <option key={option.id} value={option.id}>
                     {option.label}
                   </option>
