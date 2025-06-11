@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function OtpActivation() {
   const location = useLocation();
+  const navigate = useNavigate(); 
   const [email, setEmail] = useState(location.state?.email || '');
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
@@ -13,6 +14,9 @@ function OtpActivation() {
     try {
       const res = await axios.post('/api/auth/verify-otp', { email, otp });
       setMessage(res.data.message);
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 1500);
     } catch (err) {
       setMessage(err.response?.data?.message || 'Activation failed.');
     }

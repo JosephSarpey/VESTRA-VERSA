@@ -33,7 +33,7 @@ function AuthRegister() {
       setLoading(false);
       if (data?.payload?.success) {
         toast.success(data?.payload?.message);
-        navigate("/auth/login");
+        navigate("/activate", { state: { email: formData.email } })
       } else {
         toast.error(data?.payload?.message || "Registration failed");
       }

@@ -10,7 +10,7 @@ const sendOtpEmail = async (email, otp) => {
   });
 
   let mailOptions = {
-    from: `"Your App Name" <${process.env.EMAIL_USER}>`,
+    from: `"Vestra Versa Fashion Hub" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Your Account Activation OTP',
     text: `Your OTP for account activation is: ${otp}`,
