@@ -29,16 +29,16 @@ const registerUser = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 12);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
 
-const newUser = new User({
-  userName,
-  email,
-  password: hashPassword,
-  activationOtp: otp,
-  activationOtpExpires: otpExpiry,
-  isActivated: false,
-});
+    const newUser = new User({
+      userName,
+      email,
+      password: hashPassword,
+      activationOtp: otp,
+      activationOtpExpires: otpExpiry,
+      isActivated: false,
+    });
 
     await newUser.save();
     await sendOtpEmail(email, otp);
@@ -80,6 +80,31 @@ const verifyOtp = async (req, res) => {
   await user.save();
 
   res.json({ message: "Account activated successfully!" });
+};
+
+// Add this to your auth controller
+const resendOtp = async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: 'Email is required' });
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Generate new OTP (or reuse if valid)
+    const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+    user.otp = otp;
+    user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 min expiry
+    await user.save();
+
+    // Send OTP via email
+    await sendOtpEmail(email, otp);
+
+    res.json({ message: 'OTP resent successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 // Login user
@@ -125,8 +150,8 @@ const loginUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,         
-      sameSite: "none",     
+      secure: true,
+      sameSite: "none",
     }).json({
       success: true,
       message: "Logged In Successfully",
@@ -186,12 +211,12 @@ const resetPassword = async (req, res) => {
   if (!user) return res.status(400).json({ message: 'Invalid or expired token.' });
 
   const bcrypt = require("bcryptjs");
-// ...inside resetPassword
-const hashPassword = await bcrypt.hash(password, 12);
-user.password = hashPassword;
-user.resetPasswordToken = undefined;
-user.resetPasswordExpires = undefined;
-await user.save();
+  // ...inside resetPassword
+  const hashPassword = await bcrypt.hash(password, 12);
+  user.password = hashPassword;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
 
   res.json({ message: 'Password has been reset.' });
 };
@@ -220,5 +245,5 @@ const authMiddleware = async (req, res, next) => {
 
 module.exports = {
   registerUser, loginUser, logoutUser, authMiddleware, requestPasswordReset,
-  resetPassword, verifyOtp
+  resetPassword, verifyOtp, resendOtp
 };

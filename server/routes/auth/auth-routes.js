@@ -6,7 +6,8 @@ const {
   authMiddleware,
   requestPasswordReset,
   resetPassword,
-  verifyOtp 
+  verifyOtp,
+  resendOtp 
 } = require("../../controllers/auth/auth-controller");
 
 const router = express.Router();
@@ -30,5 +31,6 @@ router.post("/request-password-reset", requestPasswordReset);
 router.post("/reset-password/:token", resetPassword);
 
 router.post("/verify-otp", verifyOtp);
+router.post("/resend-otp", resendOtp);
 
 module.exports = router;
