@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import CommonForm from "@/components/common/form";
 import { registerFormControls } from "@/config";
 import { registerUser } from "@/store/auth-slice";
@@ -20,7 +21,7 @@ function AuthRegister() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  function onSubmit(event) {
+  async function onSubmit(event) {
     event.preventDefault();
 
     if (!formData.userName || !formData.email || !formData.password) {
@@ -29,59 +30,49 @@ function AuthRegister() {
     }
 
     setLoading(true);
-    dispatch(registerUser(formData)).then((data) => {
-      setLoading(false);
-      if (data?.payload?.success) {
-        toast.success(data?.payload?.message);
-        navigate("/auth/login");
+    try {
+      const resultAction = await dispatch(registerUser(formData));
+      if (
+        registerUser.fulfilled.match(resultAction) &&
+        resultAction.payload.success
+      ) {
+        toast.success("Registration successful! Check your email for the OTP.");
+        navigate("/activate", { state: { email: formData.email } });
       } else {
-        toast.error(data?.payload?.message || "Registration failed");
+        toast.error(resultAction.payload?.message || "Registration failed.");
       }
-    });
+    } catch (err) {
+      toast.error("Registration failed.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <div className="mx-auto w-full max-w-md space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-black">
-          Create New Account
-        </h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Already have an account?
-          <Link
-            className="font-medium ml-2 text-[#FFD700] hover:underline"
-            to="/auth/login"
-          >
-            Login
-          </Link>
-        </p>
+    <div className="w-full">
+      <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+        <FiUserPlus className="inline-block" /> Register
+      </h2>
+      <form onSubmit={onSubmit} className="space-y-4">
+        <CommonForm
+          controls={registerFormControls}
+          formData={formData}
+          setFormData={setFormData}
+        />
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-2 rounded hover:bg-gray-900 transition"
+          disabled={loading}
+        >
+          {loading ? <Loading /> : "Register"}
+        </button>
+      </form>
+      <div className="text-center mt-4">
+        Already have an account?{" "}
+        <Link to="/auth/login" className="text-blue-600 hover:underline">
+          Login
+        </Link>
       </div>
-
-      {loading ? (
-        <Loading message="Creating your account..." />
-      ) : (
-        <>
-          <CommonForm
-            formControls={registerFormControls}
-            formData={formData}
-            buttonText={
-              <span className="flex items-center gap-2">
-                <FiUserPlus />
-                Create Account
-              </span>
-            }
-            setFormData={setFormData}
-            onSubmit={onSubmit}
-          />
-
-          <p className="text-center text-sm text-gray-600 mt-6">
-            Need help?{" "}
-            <Link to="/contact" className="text-[#FFD700] hover:underline">
-              Contact Support
-            </Link>
-          </p>
-        </>
-      )}
     </div>
   );
 }
