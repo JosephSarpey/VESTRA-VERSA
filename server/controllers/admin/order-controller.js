@@ -72,7 +72,7 @@ const updateOrderStatus = async (req, res) => {
     // Send email to user
     const user = await User.findById(order.userId);
     const userEmail = user?.email;
-    const { html } = orderStatusUpdateEmail(order);
+    const html  = orderStatusUpdateEmail(order);
 
     if (userEmail) {
       await sendMail(

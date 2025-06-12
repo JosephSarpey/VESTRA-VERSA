@@ -161,16 +161,16 @@ const capturePayment = async (req, res) => {
     await order.save();
 
     const user = await User.findById(order.userId);
-const userEmail = user?.email;
-const html = generateOrderConfirmationHTML(order); // use the full HTML email builder here
+    const userEmail = user?.email;
+    const html = orderConfirmationEmail(order);
 
-if (userEmail) {
-  await sendMail(
-    userEmail,
-    "Order Confirmed",
-    html
-  );
-}
+    if (userEmail) {
+      await sendMail(
+        userEmail,
+        "Order Confirmed",
+        html
+      );
+    }
 
 
     res.status(200).json({
