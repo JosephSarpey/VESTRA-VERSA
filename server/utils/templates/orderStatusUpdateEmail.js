@@ -1,4 +1,8 @@
 function orderStatusUpdateEmail(orderDetails) {
+
+  const cartItems = Array.isArray(orderDetails.cartItems)
+  ? orderDetails.cartItems
+  : orderDetails.cartItems?.items || [];
     const itemsTableRows = orderDetails.cartItems.map(item => `
       <tr>
         <td style="padding: 10px; border: 1px solid #ccc;">

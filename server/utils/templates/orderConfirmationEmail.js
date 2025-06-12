@@ -1,15 +1,20 @@
 function orderConfirmationEmail(orderDetails) {
-  const itemsTableRows = orderDetails.cartItems.map(item => `
-    <tr>
-      <td style="padding: 10px; border: 1px solid #ccc;">
-        <img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; margin-right: 10px; vertical-align: middle;" />
-        ${item.title}
-      </td>
-      <td style="padding: 10px; text-align: center; border: 1px solid #ccc;">${item.quantity}</td>
-      <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${Number(item.price).toFixed(2)}</td>
-      <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${(item.price * item.quantity).toFixed(2)}</td>
-    </tr>
-  `).join('');
+  const cartItems = Array.isArray(orderDetails.cartItems)
+  ? orderDetails.cartItems
+  : orderDetails.cartItems?.items || [];
+
+const itemsTableRows = cartItems.map(item => `
+  <tr>
+    <td style="padding: 10px; border: 1px solid #ccc;">
+      <img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; margin-right: 10px; vertical-align: middle;" />
+      ${item.title}
+    </td>
+    <td style="padding: 10px; text-align: center; border: 1px solid #ccc;">${item.quantity}</td>
+    <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${Number(item.price).toFixed(2)}</td>
+    <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${(item.price * item.quantity).toFixed(2)}</td>
+  </tr>
+`).join('');
+
 
   const address = orderDetails.addressInfo
     ? `${orderDetails.addressInfo.address}<br>${orderDetails.addressInfo.city}, ${orderDetails.addressInfo.country} - ${orderDetails.addressInfo.pincode}<br>Phone: ${orderDetails.addressInfo.phone}`
