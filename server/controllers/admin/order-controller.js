@@ -78,8 +78,8 @@ const updateOrderStatus = async (req, res) => {
       await sendMail(
         userEmail,
         "Order Status Updated",
-        text,
-        html
+        html,
+        text
       );
     }
 

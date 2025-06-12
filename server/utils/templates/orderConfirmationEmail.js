@@ -117,3 +117,5 @@ function orderConfirmationEmail(order) {
 
   return { html };
 }
+
+module.exports = orderConfirmationEmail;

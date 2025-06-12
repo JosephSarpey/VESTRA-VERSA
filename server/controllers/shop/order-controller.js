@@ -168,8 +168,8 @@ const capturePayment = async (req, res) => {
       await sendMail(
         userEmail,
         "Order Confirmed",
-        text,
-        html
+        html,
+        text
       );
     }
 
