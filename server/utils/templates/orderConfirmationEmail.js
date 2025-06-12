@@ -1,4 +1,5 @@
 function orderConfirmationEmail(order) {
+
   const itemsTableRows = order.cartItems.map(item => `
     <tr>
       <td style="padding: 10px; border: 1px solid #ccc;">
@@ -43,7 +44,7 @@ function orderConfirmationEmail(order) {
 
         <h2 style="font-size: 18px; margin-top: 24px;">💰 Order Summary</h2>
         <table style="width: 100%; font-size: 14px; margin-top: 10px;">
-          <tr><td>Subtotal</td><td style="text-align: right;">$${(order.totalAmount - order.taxAmount - order.shippingFee).toFixed(2)}</td></tr>
+          <tr><td>Subtotal</td><td style="text-align: right;">$${(order.total - order.taxAmount - order.shippingFee).toFixed(2)}</td></tr>
           <tr><td>Shipping</td><td style="text-align: right;">$${Number(order.shippingFee).toFixed(2)}</td></tr>
           <tr><td>Tax (5%)</td><td style="text-align: right;">$${Number(order.taxAmount).toFixed(2)}</td></tr>
           <tr style="font-weight: bold;"><td>Total</td><td style="text-align: right;">$${Number(order.totalAmount).toFixed(2)}</td></tr>
@@ -75,17 +76,17 @@ Hi ${order.userName || "Customer"},
 Thank you for your order!
 
 Order ID: ${order._id}
-Total: $${order.totalAmount}
+Total: $${order.total}
 Shipping Address: ${order.addressInfo?.address}, ${order.addressInfo?.city}, ${order.addressInfo?.country} - ${order.addressInfo?.pincode}
 Phone: ${order.addressInfo?.phone}
 
 Items:
-${order.cartItems.map(i => `- ${i.title} x${i.quantity} ($${i.price.toFixed(2)} each)`).join('\n')}
+${order.cartItems.map(item => `- ${item.title} x${item.quantity} ($${item.price.toFixed(2)} each)`).join('\n')}
 
-Subtotal: $${(order.totalAmount - order.taxAmount - order.shippingFee).toFixed(2)}
+Subtotal: $${(order.total - order.taxAmount - order.shippingFee).toFixed(2)}
 Shipping: $${Number(order.shippingFee).toFixed(2)}
 Tax: $${Number(order.taxAmount).toFixed(2)}
-Total: $${order.totalAmount}
+Total: $${order.total}
 
 Payment Method: ${order.paymentMethod}
 Status: ${order.paymentStatus}

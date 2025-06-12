@@ -161,17 +161,17 @@ const capturePayment = async (req, res) => {
     await order.save();
 
     const user = await User.findById(order.userId);
-const userEmail = user?.email;
-const { html, text } = orderConfirmationEmail(order);
+    const userEmail = user?.email;
+    const { html, text } = orderConfirmationEmail(order);
 
-if (userEmail) {
-  await sendMail(
-    userEmail,            
-    "Order Confirmed",   
-    text,                 
-    html                  
-  );
-}
+    if (userEmail) {
+      await sendMail(
+        userEmail,
+        "Order Confirmed",
+        text,
+        html
+      );
+    }
 
     res.status(200).json({
       success: true,
