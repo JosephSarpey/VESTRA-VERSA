@@ -2,6 +2,9 @@ const paypal = require("../../helpers/paypal");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+const sendMail = require('../../utils/mailer');
+const orderConfirmationEmail = require('../../utils/templates/orderConfirmationEmail');
+const User = require("../../models/User");
 
 const createOrder = async (req, res) => {
   try {
@@ -29,58 +32,55 @@ const createOrder = async (req, res) => {
       0
     );
 
-    // PayPal expects string numbers with 2 decimals
     const subtotalStr = subtotal.toFixed(2);
     const taxStr = Number(taxAmount).toFixed(2);
     const shippingStr = Number(shippingFee).toFixed(2);
     const totalStr = Number(totalAmount).toFixed(2);
 
-    // Build PayPal payment JSON
-    // ...existing code...
-const create_payment_json = {
-  intent: "sale",
-  payer: {
-    payment_method: "paypal",
-  },
-  redirect_urls: {
-    return_url: `${process.env.FRONTEND_URL}/shop/paypal-return`,
-    cancel_url: `${process.env.FRONTEND_URL}/shop/paypal-cancel`,
-  },
-  transactions: [
-    {
-      item_list: {
-        items: cartItems.map((item) => ({
-          name: item.title,
-          sku: item.productId,
-          price: Number(item.price).toFixed(2),
-          currency: "USD",
-          quantity: item.quantity,
-        })),
+    const create_payment_json = {
+      intent: "sale",
+      payer: {
+        payment_method: "paypal",
       },
-      amount: {
-        currency: "USD",
-        total: totalStr,
-        details: {
-          subtotal: subtotalStr,
-          tax: taxStr,
-          shipping: shippingStr,
+      redirect_urls: {
+        return_url: `${process.env.FRONTEND_URL}/shop/paypal-return`,
+        cancel_url: `${process.env.FRONTEND_URL}/shop/paypal-cancel`,
+      },
+      transactions: [
+        {
+          item_list: {
+            items: cartItems.map((item) => ({
+              name: item.title,
+              sku: item.productId,
+              price: Number(item.price).toFixed(2),
+              currency: "USD",
+              quantity: item.quantity,
+            })),
+          },
+          amount: {
+            currency: "USD",
+            total: totalStr,
+            details: {
+              subtotal: subtotalStr,
+              tax: taxStr,
+              shipping: shippingStr,
+            },
+          },
+          description: "Order payment",
         },
-      },
-      description: "Order payment",
-    },
-  ],
-};
+      ],
+    };
 
-   paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
-  if (error) {
-    console.error("PayPal error details:", JSON.stringify(error.response || error, null, 2));
-    return res.status(500).json({
-      success: false,
-      message: "Error while creating paypal payment",
-      error: error.response || error,
-    });
-  }
- else {
+    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
+      if (error) {
+        console.error("PayPal error details:", JSON.stringify(error.response || error, null, 2));
+        return res.status(500).json({
+          success: false,
+          message: "Error while creating paypal payment",
+          error: error.response || error,
+        });
+      }
+      else {
         const newlyCreatedOrder = new Order({
           userId,
           userName,
@@ -159,6 +159,19 @@ const capturePayment = async (req, res) => {
     await Cart.findByIdAndDelete(getCartId);
 
     await order.save();
+
+    const user = await User.findById(order.userId);
+const userEmail = user?.email;
+const { html, text } = orderConfirmationEmail(order);
+
+if (userEmail) {
+  await sendMail(
+    userEmail,            
+    "Order Confirmed",   
+    text,                 
+    html                  
+  );
+}
 
     res.status(200).json({
       success: true,

@@ -76,10 +76,9 @@ function ShoppingCheckout() {
   orderUpdateDate: new Date(),
   paymentId: "",
   payerId: "",
-
-  // Add these fields here to send tax and shipping info with the order:
-  taxAmount: tax,         // taxAmount as a number, e.g. 5.00
-  shippingFee: shippingFee,     // shippingFee as a number, e.g. 3.99
+  
+  taxAmount: tax,        
+  shippingFee: shippingFee,    
 };
 
 

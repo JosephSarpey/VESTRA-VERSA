@@ -1,4 +1,7 @@
 const Order = require("../../models/Order");
+const sendMail = require('../../utils/mailer');
+const User = require("../../models/User");
+const orderStatusUpdateEmail = require('../../utils/templates/orderStatusUpdateEmail');
 
 const getAllOrdersOfAllUser = async (req, res) => {
   try {
@@ -63,7 +66,22 @@ const updateOrderStatus = async (req, res) => {
       });
     }
 
-    await Order.findByIdAndUpdate(id, { orderStatus });
+    order.orderStatus = orderStatus;
+    await order.save();
+
+    // Send email to user
+    const user = await User.findById(order.userId);
+const userEmail = user?.email;
+const { html, text } = orderStatusUpdateEmail(order);
+
+if (userEmail) {
+  await sendMail(
+    userEmail,                   
+    "Order Status Updated",      
+    text,                         
+    html                         
+  );
+}
 
     res.status(200).json({
       success: true,
@@ -77,6 +95,7 @@ const updateOrderStatus = async (req, res) => {
     });
   }
 };
+
 
 module.exports = {
   getAllOrdersOfAllUser,
