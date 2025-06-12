@@ -4,7 +4,7 @@ import { DialogContent } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getAllOrdersForAdmin, getOrderDetailsForAdmin, updateOrderStatus } from "@/store/admin/order-slice";
 import { toast } from "sonner";
 
@@ -15,7 +15,6 @@ const initialFormData = {
 function AdminOrderDetailsView({orderDetails}) {
 
     const [formData, setFormData] = useState(initialFormData)
-    const { user } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
     function handlleUpdateStatus(event) {
@@ -95,7 +94,7 @@ function AdminOrderDetailsView({orderDetails}) {
           <div className="grid gap-2">
             <div className="font-medium">Shipping Info:</div>
             <div className="grid gap-0.5 text-muted-foreground">
-              <span>{user.userName}</span>
+              <span>{orderDetails?.userName}</span>
               <span>{orderDetails?.addressInfo?.country}</span>
               <span>{orderDetails?.addressInfo?.address}</span>
               <span>{orderDetails?.addressInfo?.city}</span>

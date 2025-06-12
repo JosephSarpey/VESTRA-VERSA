@@ -7,6 +7,7 @@ const createOrder = async (req, res) => {
   try {
     const {
       userId,
+      userName,
       cartItems,
       addressInfo,
       orderStatus,
@@ -69,7 +70,6 @@ const create_payment_json = {
     },
   ],
 };
-// ...existing code...
 
    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
   if (error) {
@@ -83,6 +83,7 @@ const create_payment_json = {
  else {
         const newlyCreatedOrder = new Order({
           userId,
+          userName,
           cartId,
           cartItems,
           addressInfo,
