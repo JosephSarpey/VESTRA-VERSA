@@ -97,3 +97,5 @@ We'll notify you when your order ships!
 
   return { html, text };
 }
+
+module.exports = orderConfirmationEmail;
