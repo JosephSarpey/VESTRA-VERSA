@@ -5,7 +5,7 @@ function orderConfirmationEmail(order) {
     <table align="center" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:auto; background:#ffffff; border:1px solid #eaeaea; border-radius:10px; overflow:hidden;">
       <tr style="background:#3B82F6; color:#ffffff;">
         <td style="padding:20px; text-align:center;">
-          <img src="https://vestraversa.com/logo.png" alt="Vestra Versa" style="height:40px; margin-bottom:10px;" />
+          <img src="https://collection.cloudinary.com/di7pya1rt/e182718ffa3853898a07e0e339176040" alt="Vestra Versa" style="height:40px; margin-bottom:10px;" />
           <h2>Order Confirmation</h2>
           <p style="margin:0;">Order ID: ${order._id}</p>
         </td>
@@ -54,7 +54,7 @@ function orderConfirmationEmail(order) {
           <p>Status: <strong>${order.paymentStatus}</strong></p>
 
           <p style="margin-top:20px; text-align:center;">
-            <a href="https://vestraversa.com/shop/account/orders/${order._id}" style="display:inline-block; background:#3B82F6; color:#ffffff; padding:10px 20px; border-radius:6px; text-decoration:none;">🔎 View Your Order</a>
+            <a href="https://vestraversa.com/shop/account" style="display:inline-block; background:#3B82F6; color:#ffffff; padding:10px 20px; border-radius:6px; text-decoration:none;">🔎 Login To View Your Order</a>
           </p>
 
           <p style="margin-top:30px;">Need help? Contact us at <a href="mailto:support@vestraversa.com">support@vestraversa.com</a></p>
