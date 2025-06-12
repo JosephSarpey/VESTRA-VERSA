@@ -106,3 +106,5 @@ Thank you,
 
   return { html, text };
 }
+
+module.exports = orderStatusUpdateEmail;
