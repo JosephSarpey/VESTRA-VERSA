@@ -1,121 +1,73 @@
 function orderConfirmationEmail(order) {
-  const supportEmail = "support@vestraversa.com";
-  const logoUrl = "https://vestraversa.com/logo.png"; // ← Replace with your real logo URL
-
-  const itemsRows = order.cartItems.map(item => {
-    const price = Number(item.price || 0).toFixed(2);
-    const total = (price * item.quantity).toFixed(2);
-    const imageUrl = item.image || 'https://via.placeholder.com/60';
-  
-    return `
-      <tr>
-        <td style="padding: 10px; border: 1px solid #ddd;">
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td style="width: 60px;">
-                <img src="${imageUrl}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;" />
-              </td>
-              <td style="padding-left: 10px; font-size: 14px;">
-                ${item.title}
-              </td>
-            </tr>
-          </table>
-        </td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">${item.quantity}</td>
-        <td style="padding: 10px; text-align: right; border: 1px solid #ddd;">$${price}</td>
-        <td style="padding: 10px; text-align: right; border: 1px solid #ddd;">$${total}</td>
-      </tr>
-    `;
-  }).join('');
-  
-
-  const subtotal = (order.totalAmount - order.taxAmount - order.shippingFee).toFixed(2);
-  const shipping = Number(order.shippingFee).toFixed(2);
-  const tax = Number(order.taxAmount).toFixed(2);
-  const total = Number(order.totalAmount).toFixed(2);
-
-  const html = `
-  <!DOCTYPE html>
+  return `
   <html>
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <style>
-        @media only screen and (max-width: 600px) {
-          .container {
-            padding: 16px !important;
-          }
-          .order-table th, .order-table td {
-            font-size: 14px !important;
-          }
-        }
-      </style>
-    </head>
-    <body style="margin: 0; padding: 0; background: #f3f4f6;">
-      <div class="container" style="max-width: 640px; margin: auto; font-family: 'Segoe UI', sans-serif; border: 1px solid #eee; border-radius: 10px; overflow: hidden; background: #fff; padding: 24px 32px;">
-        <div style="text-align: center; padding-bottom: 16px;">
-          <img src="${logoUrl}" alt="Vestra Versa Logo" style="height: 60px;" />
-        </div>
+  <body style="margin:0; padding:0; font-family:Segoe UI, sans-serif; background-color:#f6f6f6;">
+    <table align="center" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:auto; background:#ffffff; border:1px solid #eaeaea; border-radius:10px; overflow:hidden;">
+      <tr style="background:#3B82F6; color:#ffffff;">
+        <td style="padding:20px; text-align:center;">
+          <img src="https://vestraversa.com/logo.png" alt="Vestra Versa" style="height:40px; margin-bottom:10px;" />
+          <h2>Order Confirmation</h2>
+          <p style="margin:0;">Order ID: ${order._id}</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:20px;">
+          <p>Hello <strong>${order.userName || 'Customer'}</strong>,</p>
+          <p>Thank you for your order! Below is your order summary:</p>
+          <h3 style="margin-top:20px;">🛍 Items Ordered</h3>
+          <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse; font-size:14px;">
+            <thead>
+              <tr style="background:#f3f4f6; text-align:left;">
+                <th>Image</th>
+                <th>Product</th>
+                <th>Qty</th>
+                <th style="text-align:right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${order.cartItems.map(item => `
+              <tr style="border-top:1px solid #e5e7eb;">
+                <td><img src="${item.image}" alt="${item.title}" style="width:50px; height:50px; border-radius:6px;" /></td>
+                <td>${item.title}</td>
+                <td>${item.quantity}</td>
+                <td style="text-align:right;">$${(item.price * item.quantity).toFixed(2)}</td>
+              </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <h3 style="margin-top:30px;">💰 Summary</h3>
+          <table width="100%" cellpadding="8" style="font-size:14px;">
+            <tr><td>Subtotal:</td><td align="right">$${(order.totalAmount - order.taxAmount - order.shippingFee).toFixed(2)}</td></tr>
+            <tr><td>Shipping Fee:</td><td align="right">$${Number(order.shippingFee).toFixed(2)}</td></tr>
+            <tr><td>Tax:</td><td align="right">$${Number(order.taxAmount).toFixed(2)}</td></tr>
+            <tr style="font-weight:bold;"><td>Total Amount:</td><td align="right">$${Number(order.totalAmount).toFixed(2)}</td></tr>
+          </table>
 
-        <div style="text-align: center; background: #1e40af; color: white; padding: 20px 16px;">
-          <h2 style="margin: 0;">🧾 Order Confirmation</h2>
-        </div>
+          <h3 style="margin-top:30px;">📍 Shipping Address</h3>
+          <p style="margin:0;">
+            ${order.addressInfo.address},<br/>
+            ${order.addressInfo.city}, ${order.addressInfo.country} - ${order.addressInfo.pincode}<br/>
+            Phone: ${order.addressInfo.phone}
+          </p>
 
-        <p style="margin-top: 24px;">Hi <strong>${order.userName || 'Customer'}</strong>,</p>
-        <p>Thank you for your order!</p>
+          <p style="margin-top:20px;">Payment Method: <strong>${order.paymentMethod}</strong></p>
+          <p>Status: <strong>${order.paymentStatus}</strong></p>
 
-        <table style="width: 100%; font-size: 14px; margin-bottom: 16px;">
-          <tr><td><strong>Order ID:</strong></td><td>${order._id}</td></tr>
-          <tr><td><strong>Total:</strong></td><td>$${total}</td></tr>
-          <tr><td><strong>Shipping Address:</strong></td><td>${order.shippingAddress}</td></tr>
-          <tr><td><strong>Phone:</strong></td><td>${order.phone}</td></tr>
-          <tr><td><strong>Payment Method:</strong></td><td>${order.paymentMethod}</td></tr>
-          <tr><td><strong>Status:</strong></td><td>${order.paymentStatus}</td></tr>
-        </table>
+          <p style="margin-top:20px; text-align:center;">
+            <a href="https://vestraversa.com/shop/account/orders/${order._id}" style="display:inline-block; background:#3B82F6; color:#ffffff; padding:10px 20px; border-radius:6px; text-decoration:none;">🔎 View Your Order</a>
+          </p>
 
-        <h3 style="margin-top: 32px; margin-bottom: 12px;">🛍️ Items Ordered</h3>
-        <table class="order-table" style="width: 100%; border-collapse: collapse; font-size: 15px;">
-          <thead style="background: #f3f4f6;">
-            <tr>
-              <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Item</th>
-              <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Qty</th>
-              <th style="padding: 10px; text-align: right; border: 1px solid #ddd;">Price</th>
-              <th style="padding: 10px; text-align: right; border: 1px solid #ddd;">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsRows}
-          </tbody>
-        </table>
-
-        <table style="width: 100%; font-size: 15px; margin-top: 20px;">
-          <tr><td><strong>Subtotal:</strong></td><td style="text-align: right;">$${subtotal}</td></tr>
-          <tr><td><strong>Shipping:</strong></td><td style="text-align: right;">$${shipping}</td></tr>
-          <tr><td><strong>Tax:</strong></td><td style="text-align: right;">$${tax}</td></tr>
-          <tr><td><strong>Total:</strong></td><td style="text-align: right;"><strong>$${total}</strong></td></tr>
-        </table>
-
-        <p style="margin-top: 20px;">
-          📄 <a href="https://vestraversa.com/shop/account/orders/${order._id}" style="color: #2563eb;">View Order Details</a>
-        </p>
-
-        <p style="margin-top: 24px;">
-          If you have any questions, contact us at 
-          <a href="mailto:${supportEmail}" style="color: #2563eb;">${supportEmail}</a>.
-        </p>
-
-        <p style="margin-top: 20px;">We’ll notify you when your order ships!</p>
-        <p><strong>– Vestra Versa Team</strong></p>
-      </div>
-
-      <div style="text-align: center; font-size: 12px; color: #888; margin-top: 20px;">
-        &copy; ${new Date().getFullYear()} Vestra Versa. All rights reserved.
-      </div>
-    </body>
-  </html>
-  `;
-
-  return { html };
+          <p style="margin-top:30px;">Need help? Contact us at <a href="mailto:support@vestraversa.com">support@vestraversa.com</a></p>
+          <p>Thank you!<br/><strong>Vestra Versa Team</strong></p>
+        </td>
+      </tr>
+      <tr style="background:#f9fafb;">
+        <td style="padding:12px; text-align:center; font-size:12px; color:#666;">
+          &copy; ${new Date().getFullYear()} Vestra Versa. All rights reserved.
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>`;
 }
-
 module.exports = orderConfirmationEmail;
