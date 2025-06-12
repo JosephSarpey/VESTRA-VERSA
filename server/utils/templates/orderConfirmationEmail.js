@@ -1,16 +1,18 @@
 function orderConfirmationEmail(order) {
-
-  const itemsTableRows = order.cartItems.map(item => `
-    <tr>
-      <td style="padding: 10px; border: 1px solid #ccc;">
-        <img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; margin-right: 10px; vertical-align: middle;" />
-        ${item.title}
-      </td>
-      <td style="padding: 10px; text-align: center; border: 1px solid #ccc;">${item.quantity}</td>
-      <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${Number(item.price).toFixed(2)}</td>
-      <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${(item.price * item.quantity).toFixed(2)}</td>
-    </tr>
-  `).join('');
+  const itemsTableRows = order.cartItems.map(item => {
+    const price = Number(item.price || 0);
+    return `
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ccc;">
+          <img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; margin-right: 10px; vertical-align: middle;" />
+          ${item.title}
+        </td>
+        <td style="padding: 10px; text-align: center; border: 1px solid #ccc;">${item.quantity}</td>
+        <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${price.toFixed(2)}</td>
+        <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${(price * item.quantity).toFixed(2)}</td>
+      </tr>
+    `;
+  }).join('');
 
   const address = order.addressInfo
     ? `${order.addressInfo.address}<br>${order.addressInfo.city}, ${order.addressInfo.country} - ${order.addressInfo.pincode}<br>Phone: ${order.addressInfo.phone}`
@@ -47,7 +49,7 @@ function orderConfirmationEmail(order) {
           <tr><td>Subtotal</td><td style="text-align: right;">$${(order.total - order.taxAmount - order.shippingFee).toFixed(2)}</td></tr>
           <tr><td>Shipping</td><td style="text-align: right;">$${Number(order.shippingFee).toFixed(2)}</td></tr>
           <tr><td>Tax (5%)</td><td style="text-align: right;">$${Number(order.taxAmount).toFixed(2)}</td></tr>
-          <tr style="font-weight: bold;"><td>Total</td><td style="text-align: right;">$${Number(order.totalAmount).toFixed(2)}</td></tr>
+          <tr style="font-weight: bold;"><td>Total</td><td style="text-align: right;">$${Number(order.total).toFixed(2)}</td></tr>
         </table>
 
         <h2 style="font-size: 18px; margin-top: 24px;">📍 Shipping Address</h2>
@@ -55,6 +57,10 @@ function orderConfirmationEmail(order) {
 
         <p style="margin-top: 20px;">🧾 Payment Method: <strong>${order.paymentMethod}</strong></p>
         <p>Status: <strong>${order.paymentStatus}</strong></p>
+
+        <div style="margin-top: 24px; text-align: center;">
+          <a href="https://vestraversa.com/account/orders/${order._id}" style="display: inline-block; background: #3B82F6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">🔎 View Your Order</a>
+        </div>
 
         <p style="margin-top: 30px;">We'll update you when your order ships. For any queries, reply to this email.</p>
 
@@ -81,7 +87,7 @@ Shipping Address: ${order.addressInfo?.address}, ${order.addressInfo?.city}, ${o
 Phone: ${order.addressInfo?.phone}
 
 Items:
-${order.cartItems.map(item => `- ${item.title} x${item.quantity} ($${item.price.toFixed(2)} each)`).join('\n')}
+${order.cartItems.map(item => `- ${item.title} x${item.quantity} ($${Number(item.price).toFixed(2)} each)`).join('\n')}
 
 Subtotal: $${(order.total - order.taxAmount - order.shippingFee).toFixed(2)}
 Shipping: $${Number(order.shippingFee).toFixed(2)}
@@ -90,6 +96,8 @@ Total: $${order.total}
 
 Payment Method: ${order.paymentMethod}
 Status: ${order.paymentStatus}
+
+🔗 View your order: https://vestraversa.com/account/orders/${order._id}
 
 We'll notify you when your order ships!
 
