@@ -1,4 +1,4 @@
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function Footer() {
