@@ -13,7 +13,8 @@ const shopCartRouter = require("./routes/shop/cart-routes");
 const shopAddressRouter = require("./routes/shop/address-routes");
 const shopOrderRouter = require("./routes/shop/order-routes");
 const shopSearchRouter = require("./routes/shop/search-routes");
-const shopeviewRouter = require("./routes/shop/review-routes");
+const shopReviewRouter = require("./routes/shop/review-routes");
+const shopContactRouter = require("./routes/shop/contact-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
@@ -51,11 +52,12 @@ app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
-app.use("/api/shop/order", shopOrderRouter);
+app.use("/api/shop/orders", shopOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
-app.use('/api/shop/review', shopeviewRouter);
+app.use('/api/shop/reviews', shopReviewRouter);
+app.use("/api/contact", shopContactRouter);
 
-app.use('/api/common/feature', commonFeatureRouter);
+app.use('/api/common/features', commonFeatureRouter);
 
 app.get("/", (req, res) => {
   res.send("Vestra Versa API is running!");
