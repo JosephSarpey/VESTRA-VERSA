@@ -57,7 +57,7 @@ app.use("/api/shop/search", shopSearchRouter);
 app.use('/api/shop/reviews', shopReviewRouter);
 app.use("/api/contact", shopContactRouter);
 
-app.use('/api/common/features', commonFeatureRouter);
+app.use('/api/common/feature', commonFeatureRouter);
 
 app.get("/", (req, res) => {
   res.send("Vestra Versa API is running!");
