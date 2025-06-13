@@ -27,49 +27,62 @@ router.post('/', async (req, res) => {
       replyTo: email,
       subject: `New Contact Form: ${subject}`,
       html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="UTF-8" />
-            <title>Contact Form Submission</title>
-          </head>
-          <body style="margin: 0; padding: 0; background-color: #121212; font-family: Arial, sans-serif;">
-            <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#121212">
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8" />
+      <title>Contact Form Message</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f8f8f8;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f8f8; padding: 20px;">
+        <tr>
+          <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+              <!-- Header -->
               <tr>
-                <td align="center" style="padding: 20px;">
-                  <table width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#1e1e1e" style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(255,215,0,0.2);">
-                    <tr>
-                      <td bgcolor="#2c2c2c" style="padding: 20px; color: #FFD700; text-align: center;">
-                        <h2 style="margin: 0; font-size: 24px;">New Contact Form Submission</h2>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 20px; color: #f0f0f0;">
-                        <p><strong style="color: #FFD700;">Name:</strong> ${name}</p>
-                        <p><strong style="color: #FFD700;">Email:</strong> ${email}</p>
-                        <p><strong style="color: #FFD700;">Subject:</strong> ${subject}</p>
-                        <hr style="border: none; border-top: 1px solid #FFD700; margin: 20px 0;" />
-                        <h3 style="margin: 0 0 10px; color: #FFD700;">Message</h3>
-                        <p style="white-space: pre-line; line-height: 1.6;">${message}</p>
-                        <div style="text-align: center; margin-top: 30px;">
-                          <a href="mailto:${email}" style="background-color: #FFD700; color: #121212; text-decoration: none; padding: 12px 24px; border-radius: 5px; display: inline-block; font-weight: bold;">
-                            Reply to ${name}
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td bgcolor="#2c2c2c" style="text-align: center; padding: 10px; font-size: 12px; color: #aaa;">
-                        <p style="margin: 0;">This message was sent from your website's contact form.</p>
-                      </td>
-                    </tr>
-                  </table>
+                <td style="background-color: #1e1e1e; color: #FFD700; text-align: center; padding: 20px;">
+                  <h2 style="margin: 0;">New Contact Form Message</h2>
+                </td>
+              </tr>
+
+              <!-- Message Content -->
+              <tr>
+                <td style="padding: 30px; color: #333333;">
+                  <p>Hello Admin,</p>
+                  <p>You have received a new contact form submission:</p>
+
+                  <p><strong>Name:</strong> ${name}</p>
+                  <p><strong>Email:</strong> ${email}</p>
+                  <p><strong>Subject:</strong> ${subject}</p>
+
+                  <h3 style="color: #FFD700; margin-top: 30px;">Message</h3>
+                  <p style="line-height: 1.6; white-space: pre-line;">${message}</p>
+
+                  <!-- Reply Button -->
+                  <div style="margin-top: 30px; text-align: center;">
+                    <a href="mailto:${email}" style="background-color: #FFD700; color: #1e1e1e; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;">
+                      ✉️ Reply to ${name}
+                    </a>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 20px; text-align: center; font-size: 13px; color: #888;">
+                  <p>Need help? Contact your site admin.</p>
+                  <p style="margin-top: 10px;"><strong>Your Website Team</strong></p>
+                  <p style="margin-top: 20px;">© ${new Date().getFullYear()} YourWebsite. All rights reserved.</p>
                 </td>
               </tr>
             </table>
-          </body>
-        </html>
-      `,
+          </td>
+        </tr>
+      </table>
+    </body>
+  </html>
+`,
+
     };
 
     await transporter.sendMail(mailOptions);
