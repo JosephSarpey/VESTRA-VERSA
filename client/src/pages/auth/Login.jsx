@@ -71,13 +71,6 @@ function AuthLogin() {
               Forgot Password?
             </Link>
           </div>
-
-          <p className="text-center text-sm text-gray-600 mt-6">
-            Need help?{" "}
-            <Link to="/shop/contact" className="text-[#FFD700] hover:underline">
-              Contact Support
-            </Link>
-          </p>
         </>
       )}
     </div>
