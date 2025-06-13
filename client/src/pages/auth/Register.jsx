@@ -76,7 +76,7 @@ function AuthRegister() {
 
           <p className="text-center text-sm text-gray-600 mt-6">
             Need help?{" "}
-            <Link to="/contact" className="text-[#FFD700] hover:underline">
+            <Link to="/shop/contact" className="text-[#FFD700] hover:underline">
               Contact Support
             </Link>
           </p>

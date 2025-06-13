@@ -1,4 +1,3 @@
-// client/src/pages/shopping-view/contact.jsx
 import { useState } from 'react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,7 +27,6 @@ export default function ContactPage() {
     setIsLoading(true);
     
     try {
-      // TODO: Replace with your actual API endpoint
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -62,7 +60,6 @@ export default function ContactPage() {
         <h1 className="text-3xl font-bold mb-8 text-center">Contact Us</h1>
         
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Contact Form */}
           <div>
             <h2 className="text-2xl font-semibold mb-6">Send us a message</h2>
             <form onSubmit={handleSubmit} className="space-y-4">

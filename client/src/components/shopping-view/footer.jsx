@@ -28,7 +28,7 @@ function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/contact" className="hover:underline">
+              <Link to="/shop/contact" className="hover:underline">
                 Contact
               </Link>
             </li>

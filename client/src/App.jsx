@@ -52,7 +52,6 @@ function App() {
             ></CheckAuth>
           }
         />
-        <Route path="contact" element={<ContactPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/activate" element={<OtpActivation />} />
@@ -97,7 +96,7 @@ function App() {
             <Route path="paypal-return" element={<PayPalReturnPage />} />
             <Route path="payment-success" element={<PaymentSuccessPage />} />
             <Route path="search" element={<SearchProducts />} />
-            
+            <Route path="contact" element={<ContactPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
           <Route path="/unauth-page" element={<UnauthPage />} />
