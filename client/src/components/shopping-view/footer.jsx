@@ -40,6 +40,15 @@ function Footer() {
           <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
           <div className="flex gap-4">
             <a
+              href="https://wa.me/+233507513019"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="hover:text-green-500"
+            >
+              <FaWhatsapp />
+            </a>
+            <a
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -126,7 +126,7 @@ export default function ContactPage() {
             <div>
               <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
               <p className="mb-6">
-                Have questions or feedback? We'd love to hear from you! Fill out the form or reach out to us using the contact details below.
+                Have questions or feedback? We&apos;d love to hear from you! Fill out the form or reach out to us using the contact details below.
               </p>
               
               <div className="space-y-4">
@@ -151,6 +151,14 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium">Phone</h3>
                     <a href="tel:+12125551234" className="text-sm text-gray-600 hover:underline">+1 (212) 555-1234</a>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <MessageCircle className="h-5 w-5 text-gray-600" />
+                  <div>
+                    <h3 className="font-medium">WhatsApp</h3>
+                    <a href="https://wa.me/+233507513019" className="text-sm text-gray-600 hover:underline">Reach Us on WhatsApp</a>
                   </div>
                 </div>
               </div>
