@@ -33,13 +33,13 @@ router.post('/', async (req, res) => {
             <meta charset="UTF-8" />
             <title>Contact Form Submission</title>
           </head>
-          <body style="margin: 0; padding: 0; background-color: #ffffff; font-family: Arial, sans-serif;">
-            <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
+          <body style="margin: 0; padding: 0; background-color: #121212; font-family: Arial, sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#121212">
               <tr>
                 <td align="center" style="padding: 20px;">
-                  <table width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(255,215,0,0.2);">
+                  <table width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#1e1e1e" style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(255,215,0,0.2);">
                     <tr>
-                      <td bgcolor="#ffffff" style="padding: 20px; color: #FFD700; text-align: center;">
+                      <td bgcolor="#2c2c2c" style="padding: 20px; color: #FFD700; text-align: center;">
                         <h2 style="margin: 0; font-size: 24px;">New Contact Form Submission</h2>
                       </td>
                     </tr>
@@ -59,7 +59,7 @@ router.post('/', async (req, res) => {
                       </td>
                     </tr>
                     <tr>
-                      <td bgcolor="#ffffff" style="text-align: center; padding: 10px; font-size: 12px; color: #aaa;">
+                      <td bgcolor="#2c2c2c" style="text-align: center; padding: 10px; font-size: 12px; color: #aaa;">
                         <p style="margin: 0;">This message was sent from your website's contact form.</p>
                       </td>
                     </tr>
