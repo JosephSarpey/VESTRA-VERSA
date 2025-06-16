@@ -46,9 +46,15 @@ const addToCart = async (req, res) => {
     }
 
     const findCurrentProductIndex = cart.items.findIndex(
-      (item) => 
-        item.productId.toString() === productId && 
-        item.size === (size || undefined)
+      (item) => {
+        const isMatchingProduct = item.productId.toString() === productId;
+        // If size is provided, it must match. If not, only match items with null/undefined size
+        const isMatchingSize = size ? 
+          (item.size === size) : 
+          (item.size === null || item.size === undefined);
+          
+        return isMatchingProduct && isMatchingSize;
+      }
     );
 
     if (findCurrentProductIndex === -1) {
@@ -151,9 +157,15 @@ const updateCartItemQty = async (req, res) => {
     }
 
     const findCurrentProductIndex = cart.items.findIndex(
-      (item) => 
-        item.productId.toString() === productId && 
-        item.size === (size || undefined)
+      (item) => {
+        const isMatchingProduct = item.productId.toString() === productId;
+        // If size is provided, it must match. If not, only match items with null/undefined size
+        const isMatchingSize = size ? 
+          (item.size === size) : 
+          (item.size === null || item.size === undefined);
+          
+        return isMatchingProduct && isMatchingSize;
+      }
     );
 
     if (findCurrentProductIndex === -1) {
