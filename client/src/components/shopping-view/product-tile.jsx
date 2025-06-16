@@ -101,7 +101,7 @@ function ShoppingProductTile({
                 <div className="mb-1">
                   <span className="text-sm font-medium text-gray-700">Sizes: </span>
                   <span className="text-sm text-gray-600">
-                    {product.sizes.map(size => size).join(', ')}
+                    Available Sizes: {product.sizes.map(size => size).join(', ')}
                   </span>
                 </div>
               )}
@@ -122,7 +122,6 @@ function ShoppingProductTile({
                   </span>
                 )}
               </div>
-              {/* Removed review/ratings display */}
             </>
           )}
         </CardContent>
