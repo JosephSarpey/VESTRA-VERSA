@@ -137,6 +137,14 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 ({productDetails.totalStock > 0 ? "In Stock" : "Out Of Stock"})
               </span>
             </div>
+            {productDetails?.sizes?.length > 0 && (
+              <div className="mb-2">
+                <span className="text-sm font-medium text-gray-700">Available Sizes: </span>
+                <span className="text-sm text-gray-600">
+                  {productDetails.sizes.map(size => size).join(', ')}
+                </span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <StarRatingComponent rating={averageReview} />
               <span className="text-sm text-gray-500">
