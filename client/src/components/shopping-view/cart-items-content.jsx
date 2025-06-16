@@ -48,9 +48,13 @@ function UserCartItemsContent({ cartItem }) {
 
   function handleCartItemDelete(getCartItem) {
     dispatch(
-      deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
+      deleteCartItem({ 
+        userId: user?.id, 
+        productId: getCartItem?.productId,
+        size: getCartItem?.size 
+      })
     ).then((data) => {
-      if (data?.payload.success) {
+      if (data?.payload?.success) {
         toast.success("Item removed from cart");
       }
     });

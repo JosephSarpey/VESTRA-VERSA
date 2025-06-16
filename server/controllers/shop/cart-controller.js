@@ -219,11 +219,24 @@ const deleteCartItem = async (req, res) => {
       });
     }
 
-    cart.items = cart.items.filter(
-      (item) => 
-        item.productId._id.toString() !== productId || 
-        item.size !== (size || undefined)
-    );
+    // Store the original length to check if anything was removed
+    const originalLength = cart.items.length;
+    
+    // Filter out the item with matching productId and size
+    cart.items = cart.items.filter(item => {
+      const isMatchingProduct = item.productId._id.toString() === productId;
+      // If size is provided, it must match. If not, only match by productId
+      const isMatchingSize = size ? item.size === size : true;
+      return !(isMatchingProduct && isMatchingSize);
+    });
+
+    // Check if any items were actually removed
+    if (cart.items.length === originalLength) {
+      return res.status(404).json({
+        success: false,
+        message: "Item not found in cart",
+      });
+    }
 
     await cart.save();
 
@@ -237,7 +250,7 @@ const deleteCartItem = async (req, res) => {
       image: item.productId ? item.productId.image : null,
       title: item.productId ? item.productId.title : "Product not found",
       price: item.productId ? item.productId.price : null,
-      salePrice: item.productId ? item.productId.salePrice : null, // Fixed typo
+      salePrice: item.productId ? item.productId.salePrice : null,
       quantity: item.quantity,
       size: item.size,
     }));
