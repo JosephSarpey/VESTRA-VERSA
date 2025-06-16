@@ -92,7 +92,7 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
                       type="checkbox"
                       name={name}
                       value={option.id}
-                      checked={formData[name].includes(option.id)}
+                      checked={formData[name]?.includes(option.id) || false}
                       onChange={handleChange}
                       className="w-4 h-4"
                     />
