@@ -16,7 +16,8 @@ export const addToCart = createAsyncThunk(
         productId,
         quantity,
         size,
-      }
+      },
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -26,7 +27,8 @@ export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
   async (userId) => {
     const response = await axios.get(
-      `/api/shop/cart/get/${userId}`
+      `/api/shop/cart/get/${userId}`,
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -36,7 +38,8 @@ export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
   async ({ userId, productId, size }) => {
     const response = await axios.delete(
-      `/api/shop/cart/${userId}/${productId}${size ? `?size=${encodeURIComponent(size)}` : ''}`
+      `/api/shop/cart/${userId}/${productId}${size ? `?size=${encodeURIComponent(size)}` : ''}`,
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -52,7 +55,8 @@ export const updateCartQuantity = createAsyncThunk(
         productId,
         quantity,
         size: size || null
-      }
+      },
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -63,7 +67,8 @@ const shoppingCartSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(addToCart.pending, (state) => {
+    builder
+      .addCase(addToCart.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(addToCart.fulfilled, (state, action) => {
@@ -72,7 +77,6 @@ const shoppingCartSlice = createSlice({
       })
       .addCase(addToCart.rejected, (state) => {
         state.isLoading = false;
-        state.cartItems = [];
       })
       .addCase(fetchCartItems.pending, (state) => {
         state.isLoading = true;
@@ -83,7 +87,6 @@ const shoppingCartSlice = createSlice({
       })
       .addCase(fetchCartItems.rejected, (state) => {
         state.isLoading = false;
-        state.cartItems = [];
       })
       .addCase(updateCartQuantity.pending, (state) => {
         state.isLoading = true;
@@ -94,7 +97,6 @@ const shoppingCartSlice = createSlice({
       })
       .addCase(updateCartQuantity.rejected, (state) => {
         state.isLoading = false;
-        state.cartItems = [];
       })
       .addCase(deleteCartItem.pending, (state) => {
         state.isLoading = true;
@@ -105,7 +107,6 @@ const shoppingCartSlice = createSlice({
       })
       .addCase(deleteCartItem.rejected, (state) => {
         state.isLoading = false;
-        state.cartItems = [];
       });
   },
 });
