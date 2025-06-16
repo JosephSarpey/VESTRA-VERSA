@@ -66,6 +66,17 @@ export const addProductFormElements = [
     ],
   },
   {
+    label: "Size",
+    name: "size",
+    componentType: "checkboxes",
+    options: [
+      { id: "small", label: "36" },
+      { id: "medium", label: "38" },
+      { id: "large", label: "40" },
+      { id: "extraLarge", label: "42" },
+    ],
+  },
+  {
     label: "Price",
     name: "price",
     componentType: "input",

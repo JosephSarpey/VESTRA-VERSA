@@ -9,6 +9,7 @@ const ProductSchema = new mongoose.Schema(
     price: Number,
     salePrice: Number,
     totalStock: Number,
+    sizes: [{ type: String }],
   },
   { timestamps: true }
 );

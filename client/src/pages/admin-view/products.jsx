@@ -28,6 +28,7 @@ const initialFormData = {
   price: "",
   salePrice: "",
   totalStock: "",
+  sizes: [],
 };
 
 function AdminProducts() {
@@ -63,38 +64,43 @@ function AdminProducts() {
 
   function onSubmit(event) {
     event.preventDefault();
-
-    currentEditedId !== null
-      ? dispatch(
-          editProduct({
-            id: currentEditedId,
-            formData,
-          })
-        ).then((data) => {
-
-          if (data?.payload.success) {
-            dispatch(fetchAllProducts());
-            toast.success(data?.payload?.message);
-            setFormData(initialFormData);
-            setOpenCreateProductsDialog(false);
-            setCurrentEditedId(null);
-          }
+  
+    const productData = {
+      ...formData,
+      sizes: formData.sizes || [], // Ensure sizes is always an array
+    };
+  
+    if (currentEditedId !== null) {
+      dispatch(
+        editProduct({
+          id: currentEditedId,
+          formData: productData, // Use the updated productData
         })
-      : dispatch(
-          addNewProduct({
-            ...formData,
-            image: uploadedImageUrl,
-          })
-        ).then((data) => {
-          console.log(data);
-          if (data?.payload?.success) {
-            dispatch(fetchAllProducts());
-            setOpenCreateProductsDialog(false);
-            setImageFile(null);
-            setFormData(initialFormData);
-            toast.success(data?.payload?.message);
-          }
-        });
+      ).then((data) => {
+        if (data?.payload.success) {
+          dispatch(fetchAllProducts());
+          toast.success(data?.payload?.message);
+          setFormData(initialFormData);
+          setOpenCreateProductsDialog(false);
+          setCurrentEditedId(null);
+        }
+      });
+    } else {
+      dispatch(
+        addNewProduct({
+          ...productData, // Use the updated productData
+          image: uploadedImageUrl,
+        })
+      ).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllProducts());
+          setOpenCreateProductsDialog(false);
+          setImageFile(null);
+          setFormData(initialFormData);
+          toast.success(data?.payload?.message);
+        }
+      });
+    }
   }
 
   function handleDelete(getCurrentProductId) {
@@ -132,6 +138,7 @@ function AdminProducts() {
         {productsList && productsList.length > 0
           ? productsList.map((productItem) => (
               <AdminProductTile
+                key={productItem._id}
                 setFormData={setFormData}
                 setOpenCreateProductsDialog={setOpenCreateProductsDialog}
                 setCurrentEditedId={setCurrentEditedId}
@@ -189,4 +196,3 @@ function AdminProducts() {
 }
 
 export default AdminProducts;
-// ...existing code...

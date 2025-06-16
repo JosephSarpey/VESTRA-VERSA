@@ -5,8 +5,16 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      const currentValues = formData[name] || [];
+      const updatedValues = checked
+        ? [...currentValues, value] // Add to array if checked
+        : currentValues.filter((item) => item !== value); // Remove if unchecked
+      setFormData({ ...formData, [name]: updatedValues });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   return (
@@ -76,6 +84,22 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
                   </option>
                 ))}
               </select>
+            ) : componentType === "checkboxes" ? (
+              <div className="flex flex-col gap-2">
+                {options.map((option) => (
+                  <label key={option.id} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      name={name}
+                      value={option.id}
+                      checked={formData[name].includes(option.id)}
+                      onChange={handleChange}
+                      className="w-4 h-4"
+                    />
+                    {option.label}
+                  </label>
+                ))}
+              </div>
             ) : null}
           </div>
         );

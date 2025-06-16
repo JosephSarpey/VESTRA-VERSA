@@ -22,11 +22,21 @@ function AdminProductTile({
         <CardContent>
           <h2 className="text-xl font-bold mb-2 mt-2">{product?.title}</h2>
           <h2 className="text-xl font-bold mb-2 mt-2">{product?.category}</h2>
+
+          {/* Add this section to display sizes */}
+          {product?.sizes?.length > 0 && (
+            <div className="mb-2">
+              <span className="text-sm font-medium">Sizes: </span>
+              <span className="text-sm">
+                {product.sizes.map(size => size).join(', ')}
+              </span>
+            </div>
+          )}
+
           <div className="flex justify-between items-center mb-2">
             <span
-              className={`${
-                product?.salePrice > 0 ? "line-through text-red-500" : ""
-              } text-lg font-semibold text-primary`}
+              className={`${product?.salePrice > 0 ? "line-through text-red-500" : ""
+                } text-lg font-semibold text-primary`}
             >
               ${product?.price}
             </span>
@@ -43,13 +53,13 @@ function AdminProductTile({
               setCurrentEditedId(product?._id);
               setFormData(product);
             }}
-          ><PencilLine/>
+          ><PencilLine />
             Edit
           </Button>
           <Button
             onClick={() => handleDelete(product?._id)}
             className="cursor-pointer"
-          > <Trash2/>
+          > <Trash2 />
             Delete
           </Button>
         </CardFooter>
