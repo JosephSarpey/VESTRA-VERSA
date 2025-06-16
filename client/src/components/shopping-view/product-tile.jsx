@@ -97,6 +97,14 @@ function ShoppingProductTile({
               <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
                 {product?.title}
               </h3>
+              {product?.sizes?.length > 0 && (
+                <div className="mb-1">
+                  <span className="text-sm font-medium text-gray-700">Sizes: </span>
+                  <span className="text-sm text-gray-600">
+                    {product.sizes.map(size => size).join(', ')}
+                  </span>
+                </div>
+              )}
               <p className="text-sm text-gray-500">
                 {categoryOptionsMap[product?.category]}
               </p>

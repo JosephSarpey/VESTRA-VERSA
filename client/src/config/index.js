@@ -74,6 +74,7 @@ export const addProductFormElements = [
       { id: "M", label: "38" },
       { id: "L", label: "40" },
       { id: "XL", label: "42" },
+      { id: "XXL", label: "44" },
     ],
   },
   {
