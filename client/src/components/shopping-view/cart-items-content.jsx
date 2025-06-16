@@ -14,12 +14,12 @@ function UserCartItemsContent({ cartItem }) {
     if (typeOfAction === "plus") {
       const getCartItems = cartItems.items || [];
       const indexOfCurrentCartItem = getCartItems.findIndex(
-        (item) => item.productId === getCartItem?.productId
+        (item) => item.productId === getCartItem?.productId && item.size === getCartItem?.size
       );
       const getCurrentProductIndex = productList.findIndex(
         (product) => product._id === getCartItem?.productId
       );
-      const getTotalStock = productList[getCurrentProductIndex].totalStock;
+      const getTotalStock = productList[getCurrentProductIndex]?.totalStock || 0;
 
       if (indexOfCurrentCartItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentCartItem].quantity;
@@ -30,17 +30,22 @@ function UserCartItemsContent({ cartItem }) {
       }
     }
 
+    const newQuantity = typeOfAction === "plus" ? getCartItem?.quantity + 1 : getCartItem?.quantity - 1;
+    
+    // Don't allow quantity to go below 1
+    if (newQuantity < 1) {
+      return;
+    }
+
     dispatch(
       updateCartQuantity({
         userId: user?.id,
         productId: getCartItem?.productId,
-        quantity:
-          typeOfAction === "plus"
-            ? getCartItem?.quantity + 1
-            : getCartItem?.quantity - 1,
+        quantity: newQuantity,
+        size: getCartItem?.size
       })
     ).then((data) => {
-      if (data?.payload.success) {
+      if (data?.payload?.success) {
         toast.success("Cart item updated");
       }
     });
