@@ -1,9 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import clsx from "clsx";
 import { LayoutDashboard, Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import ShoppingHeader from "./header";
 import FilterComponent from "./filter";
 
@@ -20,7 +19,9 @@ function ShoppingLayout() {
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-4 right-4 z-50 lg:hidden rounded-full h-12 w-12 shadow-lg"
+          className={clsx(
+            "fixed bottom-4 right-4 z-50 lg:hidden rounded-full h-12 w-12 shadow-lg"
+          )}
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           {sidebarOpen ? <X className="h-5 w-5" /> : <Filter className="h-5 w-5" />}
@@ -28,19 +29,19 @@ function ShoppingLayout() {
 
         {/* Sidebar */}
         <aside
-          className={cn(
-            "fixed inset-y-0 left-0 z-40 w-64 border-r bg-white transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-shrink-0",
+          className={clsx(
+            "fixed inset-y-0 left-0 z-40 w-64 border-r bg-white transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-shrink-0 overflow-y-auto",
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >
           <div className="flex flex-col h-full w-full">
-            <div className="flex h-14 items-center border-b px-4">
+            <div className="flex h-14 items-center border-b px-4 shrink-0">
               <LayoutDashboard className="h-5 w-5 mr-2 text-gray-500" />
               <h2 className="text-lg font-semibold">Filters</h2>
             </div>
-            <ScrollArea className="flex-1 p-4">
+            <div className="p-4 overflow-y-auto">
               <FilterComponent />
-            </ScrollArea>
+            </div>
           </div>
         </aside>
 
