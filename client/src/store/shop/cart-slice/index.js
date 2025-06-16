@@ -109,4 +109,6 @@ const shoppingCartSlice = createSlice({
   },
 });
 
+// comment
+
 export default shoppingCartSlice.reducer;

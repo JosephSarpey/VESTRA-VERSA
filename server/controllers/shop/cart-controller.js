@@ -12,6 +12,8 @@ const addToCart = async (req, res) => {
       });
     }
 
+    //comment
+
     const product = await Product.findById(productId);
 
     if (!product) {
