@@ -85,6 +85,11 @@ function UserCartItemsContent({ cartItem }) {
           </div>
           <p className="text-sm text-gray-500 mt-1">
             ${unitPrice.toFixed(2)} x {cartItem?.quantity}
+            {cartItem?.size && (
+              <span className="ml-2 text-xs text-gray-500">
+                (Size: {cartItem.size})
+              </span>
+            )}
           </p>
 
           <div className="flex items-center gap-2 mt-2">

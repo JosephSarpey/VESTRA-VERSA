@@ -20,6 +20,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
   const [rating, setRating] = useState(0);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -29,6 +30,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const handleRatingChange = (getRating) => setRating(getRating);
 
   const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+    if (productDetails?.sizes?.length > 0 && !selectedSize) {
+      toast.error("Please select a size");
+      return;
+    }
+
     let getCartItems = cartItems.items || [];
 
     const indexOfCurrentItem = getCartItems.findIndex(
@@ -48,6 +54,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
+        size: selectedSize || null,
       })
     ).then((data) => {
       if (data?.payload.success) {
@@ -73,6 +80,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     setRating(0);
     setReviewMsg("");
     setIsAddedToCart(false);
+    setSelectedSize("");
   };
 
   const handleAddReview = () => {
@@ -137,6 +145,29 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 ({productDetails.totalStock > 0 ? "In Stock" : "Out Of Stock"})
               </span>
             </div>
+            {productDetails?.sizes?.length > 0 && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Size
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {productDetails.sizes.map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-3 py-1 border rounded-md text-sm ${
+                        selectedSize === size
+                          ? 'bg-primary text-white border-primary'
+                          : 'border-gray-300 hover:border-primary hover:bg-gray-50'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             {productDetails?.sizes?.length > 0 && (
               <div className="mb-2">
                 <span className="text-sm font-medium text-gray-700">Available Sizes: </span>
