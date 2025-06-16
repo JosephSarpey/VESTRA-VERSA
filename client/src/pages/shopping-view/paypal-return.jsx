@@ -14,13 +14,29 @@ function PayPalReturnPage() {
   useEffect(() => {
     if (paymentId && payerId) {
       const orderId = JSON.parse(sessionStorage.getItem("currentOrderId"));
-
-      dispatch(capturePayment({ paymentId, payerId, orderId })).then((data) => {
-        if (data?.payload?.success) {
-          sessionStorage.removeItem("currentOrderId");
-          window.location.href = "/shop/payment-success";
-        }
-      });
+  
+      if (!orderId) {
+        console.error("No order ID found in session storage");
+        window.location.href = "/shop/checkout?error=missing_order";
+        return;
+      }
+  
+      dispatch(capturePayment({ paymentId, payerId, orderId }))
+        .then((data) => {
+          if (data?.payload?.success) {
+            sessionStorage.removeItem("currentOrderId");
+            window.location.href = "/shop/payment-success";
+          } else {
+            console.error("Payment capture failed:", data?.payload?.message);
+            window.location.href = `/shop/checkout?error=payment_failed&paymentId=${paymentId}`;
+          }
+        })
+        .catch((error) => {
+          console.error("Payment capture error:", error);
+          window.location.href = `/shop/checkout?error=payment_error&paymentId=${paymentId}`;
+        });
+    } else {
+      window.location.href = "/shop/checkout?error=invalid_payment";
     }
   }, [paymentId, payerId, dispatch]);
 

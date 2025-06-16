@@ -82,14 +82,20 @@ function ShoppingCheckout() {
 };
 
 
-    setIsPaymentStart(true);
-    dispatch(createNewOrder(orderData)).then((data) => {
-      if (!data?.payload?.success) {
-        setIsPaymentStart(false);
-        toast.error("Failed to initiate order. Please try again.");
-      }
-    });
-  };
+setIsPaymentStart(true);
+dispatch(createNewOrder(orderData))
+  .then((data) => {
+    if (!data?.payload?.success) {
+      setIsPaymentStart(false);
+      toast.error("Failed to initiate order. Please try again.");
+    }
+  })
+  .catch((error) => {
+    setIsPaymentStart(false);
+    toast.error("An error occurred while creating your order.");
+    console.error("Order creation error:", error);
+  });
+};
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-white min-h-screen font-sans text-gray-800">

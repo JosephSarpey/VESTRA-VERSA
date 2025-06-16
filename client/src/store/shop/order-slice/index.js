@@ -23,17 +23,19 @@ export const createNewOrder = createAsyncThunk(
 
 export const capturePayment = createAsyncThunk(
   "/order/capturePayment",
-  async ({ paymentId, payerId, orderId }) => {
-    const response = await axios.post(
-      "/api/shop/order/capture",
-      {
-        paymentId,
-        payerId,
-        orderId,
-      }
-    );
-
-    return response.data;
+  async ({ paymentId, payerId, orderId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "/api/shop/order/capture",
+        { paymentId, payerId, orderId }
+      );
+      return response.data;
+    } catch (error) {
+      // Return error message from API or default message
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to capture payment"
+      );
+    }
   }
 );
 
