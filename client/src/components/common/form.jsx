@@ -6,14 +6,29 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
     if (type === "checkbox") {
-      const currentValues = formData[name] || [];
-      const updatedValues = checked
-        ? [...currentValues, value] // Add to array if checked
-        : currentValues.filter((item) => item !== value); // Remove if unchecked
-      setFormData({ ...formData, [name]: updatedValues });
+      setFormData(prev => {
+        // Get current array of values or initialize as empty array
+        const currentValues = Array.isArray(prev[name]) ? [...prev[name]] : [];
+        
+        // Update the array based on checkbox state
+        const updatedValues = checked
+          ? [...currentValues, value] // Add value if checked
+          : currentValues.filter(item => item !== value); // Remove value if unchecked
+        
+        // Return updated state
+        return {
+          ...prev,
+          [name]: updatedValues
+        };
+      });
     } else {
-      setFormData({ ...formData, [name]: value });
+      // Handle other input types normally
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
     }
   };
 
