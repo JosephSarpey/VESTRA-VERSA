@@ -99,9 +99,9 @@ function ShoppingProductTile({
               </h3>
               {product?.sizes?.length > 0 && (
                 <div className="mb-1">
-                  <span className="text-sm font-medium text-gray-700">Sizes: </span>
+                  <span className="text-sm font-medium text-gray-700">Available Sizes: </span>
                   <span className="text-sm text-gray-600">
-                    Available Sizes: {product.sizes.map(size => size).join(', ')}
+                     {product.sizes.map(size => size).join(', ')}
                   </span>
                 </div>
               )}
