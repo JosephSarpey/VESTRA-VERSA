@@ -70,11 +70,11 @@ export const addProductFormElements = [
     name: "sizes",
     componentType: "checkboxes",
     options: [
-      { id: "S", label: "36" },
-      { id: "M", label: "38" },
-      { id: "L", label: "40" },
-      { id: "XL", label: "42" },
-      { id: "XXL", label: "44" },
+      { id: "36", label: "S" },
+      { id: "38", label: "M" },
+      { id: "40", label: "L" },
+      { id: "42", label: "XL" },
+      { id: "44", label: "XXL" },
     ],
   },
   {
