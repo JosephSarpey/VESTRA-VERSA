@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { COMPANY_INFO } from '../../constants/navigation';
 import ShoppingHeader from '../../components/shopping-view/header';
 import { Button } from '@/components/ui/button';
