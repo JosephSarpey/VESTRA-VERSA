@@ -106,7 +106,7 @@ function ShoppingHome() {
                 }`}
             >
               {/* Gradient Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-yellow-400 opacity-90 blur-sm z-0" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#333] to-[#0d0d0d] opacity-95 z-0" />
               {/* Optional overlay glow effect */}
               <div className="absolute inset-0 bg-white/10 backdrop-blur-sm z-10" />
               <div className="z-20 px-4 text-center text-white">
