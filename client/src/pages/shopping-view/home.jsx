@@ -78,7 +78,7 @@ function ShoppingHome() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % (featureImageList.length + 1)); // +1 for text slide
-    }, 3000);
+    }, 5000);
     return () => clearInterval(timer);
   }, [featureImageList]);
 
@@ -121,7 +121,7 @@ function ShoppingHome() {
                 <img
                   src={logo}
                   alt="Vestra Versa Logo"
-                  className="mx-auto mt-6 w-24 md:w-32 drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]"
+                  className="rounded-full mx-auto mt-6 w-24 md:w-32 drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]"
                 />
 
                 <Button className="mt-6 px-6 py-3 text-lg bg-[#FFD700] text-black hover:bg-[#f5c518] shadow-md">
