@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { COMPANY_INFO } from '../../../constants/navigation';
+import { COMPANY_INFO } from '../../constants/navigation';
 
 export default function PrivacyPolicy() {
   return (

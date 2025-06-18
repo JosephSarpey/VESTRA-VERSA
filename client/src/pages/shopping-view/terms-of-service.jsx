@@ -1,5 +1,5 @@
 import React from 'react';
-import { COMPANY_INFO } from '../../../constants/navigation';
+import { COMPANY_INFO } from '../../constants/navigation';
 
 export default function TermsOfService() {
   return (
