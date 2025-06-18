@@ -134,7 +134,7 @@ export default function ContactPage() {
                   <MapPin className="h-5 w-5 mt-0.5 text-gray-600" />
                   <div>
                     <h3 className="font-medium">Address</h3>
-                    <p className="text-sm text-gray-600">123 Fashion Avenue, New York, NY 10001, USA</p>
+                    <p className="text-sm text-gray-600">Main Street, 10801, New Rochelle, New York, NY, USA</p>
                   </div>
                 </div>
                 
@@ -142,7 +142,7 @@ export default function ContactPage() {
                   <Mail className="h-5 w-5 text-gray-600" />
                   <div>
                     <h3 className="font-medium">Email</h3>
-                    <a href="mailto:contact@vestraversa.com" className="text-sm text-gray-600 hover:underline">contact@vestraversa.com</a>
+                    <a href="mailto:vestraversa@gmail.com" className="text-sm text-gray-600 hover:underline">vestraversa@gmail.com</a>
                   </div>
                 </div>
                 
