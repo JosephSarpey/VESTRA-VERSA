@@ -108,12 +108,11 @@ function App() {
             <Route path="payment-success" element={<PaymentSuccessPage />} />
             <Route path="search" element={<SearchProducts />} />
             <Route path="contact" element={<ContactPage />} />
-            {/* Public routes */}
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
           </Route>
           
-          
+          {/* Public routes */}
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
           
           <Route path="*" element={<NotFound />} />
           <Route path="/unauth-page" element={<UnauthPage />} />
