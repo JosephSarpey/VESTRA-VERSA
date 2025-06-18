@@ -2,7 +2,7 @@ export const NAV_LINKS = [
   { name: 'Home', path: '/' },
   { name: 'Shop', path: '/shop/listing' },
   { name: 'Contact', path: '/shop/contact' },
-  { name: 'About Us', path: '/about' },
+  { name: 'About Us', path: '/shop/about' },
   { name: 'Privacy Policy', path: '/privacy-policy' },
   { name: 'Terms of Service', path: '/terms' },
 ];
