@@ -133,25 +133,14 @@ function ShoppingProductTile({
         ) : (
           <motion.button
             whileTap={{ scale: 0.95 }}
-            onClick={handleCartClick}
-            disabled={isOutOfStock}
+            onClick={() => !isLoading && handleGetProductDetails(product?._id)}
             className={`w-full flex items-center justify-center gap-2 text-white font-semibold py-2 rounded-lg transition-all duration-300 ${
               isOutOfStock
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-primary hover:bg-primary/90 hover:shadow-lg"
             }`}
           >
-            {added ? (
-              <>
-                <CheckCircle className="w-5 h-5 text-white" />
-                Added!
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-5 h-5" />
-                {isOutOfStock ? "Out Of Stock" : "Add to Cart"}
-              </>
-            )}
+            <span>View Product Details</span>
           </motion.button>
         )}
       </CardFooter>
