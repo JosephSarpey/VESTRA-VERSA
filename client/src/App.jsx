@@ -30,6 +30,7 @@ import OtpActivation from './components/auth/OtpActivation';
 import ContactPage from './pages/shopping-view/contact';
 import PrivacyPolicy from './pages/shopping-view/privacy-policy';
 import TermsOfService from './pages/shopping-view/terms-of-service';
+import AboutPage from './pages/shopping-view/about';
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -108,6 +109,7 @@ function App() {
             <Route path="payment-success" element={<PaymentSuccessPage />} />
             <Route path="search" element={<SearchProducts />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="about" element={<AboutPage />} />
           </Route>
           
           {/* Public routes */}
