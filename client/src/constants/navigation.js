@@ -38,7 +38,7 @@ export const COMPANY_INFO = {
   name: 'VESTRA VERSA',
   description: 'Shop smart. Shop Fast. Your favorite online store.',
   copyright: `© ${new Date().getFullYear()} VESTRA VERSA. All rights reserved.`,
-  address: '123 Shopping St., Accra, Ghana',
-  email: 'info@vestraversa.com',
+  address: 'Main Street, 10801, New Rochelle, New York, NY, USA',
+  email: 'vestraversa@gmail.com',
   phone: '+233 50 751 3019',
 };

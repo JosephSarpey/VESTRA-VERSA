@@ -28,6 +28,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import OtpActivation from './components/auth/OtpActivation';
 import ContactPage from './pages/shopping-view/contact';
+import PrivacyPolicy from './pages/shopping-view/privacy-policy';
+import TermsOfService from './pages/shopping-view/terms-of-service';
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -107,6 +109,10 @@ function App() {
             <Route path="search" element={<SearchProducts />} />
             <Route path="contact" element={<ContactPage />} />
           </Route>
+          
+          {/* Public routes */}
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
           
           <Route path="*" element={<NotFound />} />
           <Route path="/unauth-page" element={<UnauthPage />} />
