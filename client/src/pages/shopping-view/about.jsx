@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { COMPANY_INFO } from '../../constants/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-
+import logo from '../../assets/vv_logo.jpg';
 const teamMembers = [
   {
     name: 'Ebenezer Amakeh',
@@ -58,6 +58,13 @@ export default function AboutPage() {
               <p className="mt-3 max-w-md mx-auto text-base text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
                 Crafting premium fashion with a commitment to excellence and style.
               </p>
+              <div className="mt-8 flex justify-center">
+                <img 
+                  src={logo} 
+                  alt="VESTRA VERSA Logo" 
+                  className="h-32 w-32 md:h-40 md:w-40 rounded-full object-cover border-4 border-amber-500 p-1"
+                />
+              </div>
             </div>
           </div>
         </section>
