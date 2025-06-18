@@ -105,10 +105,10 @@ function ShoppingHome() {
                   : "opacity-0 scale-105"
                 }`}
             >
-              {/* Gradient Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#333] to-[#0d0d0d] opacity-95 z-0" />
+              {/* Gradient Background with soft gold touch */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#2a1e0f] to-[#0d0d0d] opacity-95 z-0" />
               {/* Optional overlay glow effect */}
-              <div className="absolute inset-0 bg-white/10 backdrop-blur-sm z-10" />
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent via-30% to-[#d4af3740] z-10 mix-blend-overlay" />
               <div className="z-20 px-4 text-center text-white">
                 <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-[#FFD700] via-[#B8860B] to-[#FFD700] bg-clip-text text-transparent mb-4 drop-shadow-lg">
                   WELCOME TO VESTRA VERSA
