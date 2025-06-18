@@ -138,9 +138,16 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             </DialogTitle>
             <div className="text-muted-foreground break-words">{productDetails.description}</div>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-semibold text-primary">
+              <span className={`text-xl font-semibold ${
+                productDetails.salePrice > 0 ? 'text-gray-400 line-through' : 'text-primary'
+              }`}>
                 ${productDetails.price}
               </span>
+              {productDetails.salePrice > 0 && (
+                <span className="text-2xl font-bold text-green-600">
+                  ${productDetails.salePrice}
+                </span>
+              )}
               <span className="text-sm text-gray-500">
                 ({productDetails.totalStock > 0 ? "In Stock" : "Out Of Stock"})
               </span>

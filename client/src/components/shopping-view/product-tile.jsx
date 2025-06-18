@@ -134,7 +134,7 @@ function ShoppingProductTile({
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => !isLoading && handleGetProductDetails(product?._id)}
-            className={`w-full flex items-center justify-center gap-2 text-white font-semibold py-2 rounded-lg transition-all duration-300 ${
+            className={`cursor-pointer w-full flex items-center justify-center gap-2 text-white font-semibold py-2 rounded-lg transition-all duration-300 ${
               isOutOfStock
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-primary hover:bg-primary/90 hover:shadow-lg"
