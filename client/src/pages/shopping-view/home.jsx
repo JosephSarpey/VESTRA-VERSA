@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
 import Footer from "@/components/shopping-view/footer";
+import logo from "../../assets/vv_logo.jpg";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -30,8 +31,6 @@ const categoriesWithIcon = [
   { id: "footwear", label: "Footwear", icon: Footprints },
   { id: "preorder", label: "PreOrder", icon: LoaderPinwheel },
 ];
-
-// ... (imports stay unchanged)
 
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -101,40 +100,45 @@ function ShoppingHome() {
           slide.type === "textSlide" ? (
             <div
               key="text-slide"
-              className={`absolute top-0 left-0 w-full h-full flex items-center justify-center transition-opacity transform duration-1000 ${
-                index === currentSlide
+              className={`absolute top-0 left-0 w-full h-full flex items-center justify-center transition-opacity transform duration-1000 ${index === currentSlide
                   ? "opacity-100 scale-100"
                   : "opacity-0 scale-105"
-              }`}
+                }`}
             >
               {/* Gradient Background */}
               <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-yellow-400 opacity-90 blur-sm z-0" />
               {/* Optional overlay glow effect */}
               <div className="absolute inset-0 bg-white/10 backdrop-blur-sm z-10" />
-
-              {/* Text content */}
-              <div className="z-20 px-4 text-white text-center">
-                <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
-                  Welcome to VESTRA VERSA
+              <div className="z-20 px-4 text-center text-white">
+                <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-[#FFD700] via-[#B8860B] to-[#FFD700] bg-clip-text text-transparent mb-4 drop-shadow-lg">
+                  WELCOME TO VESTRA VERSA
                 </h1>
-                <p className="text-lg md:text-xl drop-shadow-md">
+                <p className="text-lg md:text-xl text-gray-200 drop-shadow-md">
                   Style. Simplicity. Delivered.
                 </p>
-                <Button className="mt-6 px-6 py-3 text-lg bg-white text-black hover:bg-gray-100 shadow-md">
+
+                {/* Logo */}
+                <img
+                  src={logo}
+                  alt="Vestra Versa Logo"
+                  className="mx-auto mt-6 w-24 md:w-32 drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]"
+                />
+
+                <Button className="mt-6 px-6 py-3 text-lg bg-[#FFD700] text-black hover:bg-[#f5c518] shadow-md">
                   Start Shopping
                 </Button>
               </div>
+
             </div>
           ) : (
             <img
               key={index}
               src={slide?.image}
               alt={`slide-${index}`}
-              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity transform duration-3000 ${
-                index === currentSlide
+              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity transform duration-3000 ${index === currentSlide
                   ? "opacity-100 scale-100"
                   : "opacity-0 scale-105"
-              }`}
+                }`}
             />
           )
         )}
