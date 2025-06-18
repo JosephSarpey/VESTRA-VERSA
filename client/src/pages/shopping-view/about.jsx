@@ -47,7 +47,6 @@ const values = [
 export default function AboutPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <ShoppingHeader />
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
