@@ -20,7 +20,6 @@ import {
   resetOrderDetails,
 } from "@/store/shop/order-slice";
 import { Badge } from "../ui/badge";
-import Footer from "./footer";
 
 function ShoppingOrders() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -109,7 +108,6 @@ function ShoppingOrders() {
           </CardContent>
         </Card>
       </div>
-      <Footer />
     </div>
   );
 }
