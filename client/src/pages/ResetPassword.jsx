@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { LockIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { motion } from "framer-motion";
 
