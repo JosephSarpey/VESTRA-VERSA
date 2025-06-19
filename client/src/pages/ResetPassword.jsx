@@ -3,15 +3,7 @@ import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { LockIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { motion } from "framer-motion";
-
-function getPasswordStrength(password) {
-  let strength = 0;
-  if (password.length >= 8) strength++;
-  if (/[A-Z]/.test(password)) strength++;
-  if (/[0-9]/.test(password)) strength++;
-  if (/[^A-Za-z0-9]/.test(password)) strength++;
-  return strength;
-}
+import { getPasswordStrength, getPasswordStrengthText, getPasswordStrengthColor } from "@/utils/passwordStrength";
 
 function ResetPassword() {
   const { token } = useParams();
@@ -21,10 +13,18 @@ function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
 
   const strength = getPasswordStrength(password);
-  const strengthText = ["Weak", "Fair", "Good", "Strong", "Very Strong"][strength];
+  const strengthText = getPasswordStrengthText(strength);
+  const strengthColor = getPasswordStrengthColor(strength);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if password is strong enough (at least 'Fair' strength)
+    if (strength < 2) {
+      setMessage("Please choose a stronger password");
+      return;
+    }
+    
     setLoading(true);
     setMessage("");
     try {
@@ -73,15 +73,22 @@ function ResetPassword() {
             </div>
           </div>
 
-          {/* Strength meter */}
+          {/* Password strength meter */}
           {password && (
-            <div className="text-sm font-medium text-center text-gray-700">
-              Password Strength: <span className={
-                strength <= 1 ? "text-red-500"
-                : strength === 2 ? "text-yellow-500"
-                : strength === 3 ? "text-blue-500"
-                : "text-green-600"
-              }>{strengthText}</span>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-700">Password Strength: <span className={`font-medium ${strengthColor.replace('bg', 'text')}`}>{strengthText}</span></span>
+                <span className="text-xs text-gray-500">{password.length}/8+ characters</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className={`h-2 rounded-full ${strengthColor}`}
+                  style={{ width: `${(strength / 4) * 100}%` }}
+                />
+              </div>
+              <p className="text-xs text-gray-500">
+                Use at least 8 characters with a mix of letters, numbers & symbols
+              </p>
             </div>
           )}
 
@@ -95,7 +102,13 @@ function ResetPassword() {
             {loading ? "Resetting..." : "Reset Password"}
           </button>
           {message && (
-            <p className="text-center text-sm text-blue-700 mt-2">{message}</p>
+            <p className={`text-center text-sm mt-2 ${
+              message.includes("wrong") || message.includes("stronger") 
+                ? "text-red-600" 
+                : "text-blue-700"
+            }`}>
+              {message}
+            </p>
           )}
         </form>
         <div className="text-center text-sm text-gray-600 mt-6">
