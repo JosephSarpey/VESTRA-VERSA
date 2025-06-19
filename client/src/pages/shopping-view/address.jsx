@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import AddressCard from "./address-card";
 
 const initialAddressFormData = {
+  name: "",
   country: "",
   address: "",
   city: "",

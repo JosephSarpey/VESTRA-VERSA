@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const AddressSchema = new mongoose.Schema(
   {
     userId: String,
+    name: String,
     country: String,
     address: String,
     city: String,

@@ -2,10 +2,11 @@ const Address = require("../../models/Address");
 
 const addAddress = async (req, res) => {
   try {
-    const { userId, country, address, city, pincode, phone, notes } = req.body;
+    const { userId, name, country, address, city, pincode, phone, notes } = req.body;
 
     if (
       !userId ||
+      !name ||
       !country ||
       !address ||
       !city ||
@@ -21,6 +22,7 @@ const addAddress = async (req, res) => {
 
     const newlyCreatedAddress = new Address({
       userId,
+      name,
       country,
       address,
       city,
