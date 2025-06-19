@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import logo from "../../assets/vv_logo.jpg";
 import Address from "./address";
 import ShoppingOrders from "@/components/shopping-view/orders";
-import Footer from "./footer";
+import Footer from "@/components/shopping-view/footer";
 
 function ShoppingAccount() {
   return (
