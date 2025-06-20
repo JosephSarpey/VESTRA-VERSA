@@ -1,6 +1,9 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://vestra-versa.onrender.com/api/:path*" },
+    { "source": "/api/:path*", "destination": "https://vestra-versa.onrender.com/api/:path*" }
+  ],
+  "redirects": [
+    { "source": "/", "has": [{ "type": "host", "value": "vestraversa.com" }], "destination": "https://www.vestraversa.com", "permanent": true },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
