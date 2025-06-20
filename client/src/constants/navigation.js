@@ -10,7 +10,7 @@ export const NAV_LINKS = [
 export const SOCIAL_LINKS = [
   {
     name: 'WhatsApp',
-    url: 'https://wa.me/+233507513019',
+    url: 'https://wa.me/+1 (914) 569-5621',
     icon: 'FaWhatsapp',
     color: 'hover:text-green-500',
   },
