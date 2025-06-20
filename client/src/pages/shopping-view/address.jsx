@@ -114,6 +114,7 @@ function Address({setCurrentSelectedAddress, selectedId}) {
     setCurrentEditedId(getCurrentAddress?._id);
     setFormData({
       ...formData,
+      name: getCurrentAddress?.name,
       country: getCurrentAddress?.country,
       address: getCurrentAddress?.address,
       city: getCurrentAddress?.city,

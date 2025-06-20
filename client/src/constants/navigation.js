@@ -40,5 +40,5 @@ export const COMPANY_INFO = {
   copyright: `© ${new Date().getFullYear()} VESTRA VERSA. All rights reserved.`,
   address: 'Main Street, 10801, New Rochelle, New York, NY, USA',
   email: 'vestraversa@gmail.com',
-  phone: '+233 50 751 3019',
+  phone: '+1(914)5695621',
 };

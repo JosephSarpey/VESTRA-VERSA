@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Mail, MapPin, Phone, MessageCircle } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { FaWhatsapp } from 'react-icons/fa';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -150,15 +151,15 @@ export default function ContactPage() {
                   <Phone className="h-5 w-5 text-gray-600" />
                   <div>
                     <h3 className="font-medium">Phone</h3>
-                    <a href="tel:+12125551234" className="text-sm text-gray-600 hover:underline">+1 (212) 555-1234</a>
+                    <a href="tel:+1(914)5695621" className="text-sm text-gray-600 hover:underline">+1 (212) 555-1234</a>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-3">
-                  <MessageCircle className="h-5 w-5 text-gray-600" />
+                  <FaWhatsapp className="h-5 w-5 text-gray-600" />
                   <div>
                     <h3 className="font-medium">WhatsApp</h3>
-                    <a href="https://wa.me/+233507513019" className="text-sm text-gray-600 hover:underline">Reach Us on WhatsApp</a>
+                    <a href="https://wa.me/+1(914)5695621" className="text-sm text-gray-600 hover:underline">Reach Us on WhatsApp</a>
                   </div>
                 </div>
               </div>
