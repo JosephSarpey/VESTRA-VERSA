@@ -28,9 +28,14 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// In server.js, update the cors configuration to:
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [
+      process.env.FRONTEND_URL,  
+      'https://vestraversa.com',  
+      'http://localhost:5173'    
+    ].filter(Boolean),  
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: [
       "Content-Type",
