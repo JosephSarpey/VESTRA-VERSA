@@ -26,16 +26,30 @@ function ShoppingProductTile({
   const isLoggedIn = !!user?.id;
   const navigate = useNavigate();
 
-  const handleCartClick = () => {
-    if (!isOutOfStock) {
-      if (!isLoggedIn) {
-        // Redirect to login with the current path to return after login
-        navigate(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
-        return;
-      }
-      handleAddToCart(product?._id, product?.totalStock);
-      setAdded(true);
+  const handleCartClick = (e) => {
+    e.stopPropagation(); // Prevent triggering the parent's click event
+    
+    if (isOutOfStock) return;
+
+    if (!isLoggedIn) {
+      // Redirect to login with the current path to return after login
+      navigate(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
     }
+
+    // Check if product has sizes available
+    if (product?.sizes?.length > 0) {
+      toast.info("Please select a size from the product details page", {
+        action: {
+          label: "View Details",
+          onClick: () => handleGetProductDetails(product?._id)
+        }
+      });
+      return;
+    }
+
+    handleAddToCart(product?._id, product?.totalStock);
+    setAdded(true);
   };
 
   useEffect(() => {
@@ -108,17 +122,28 @@ function ShoppingProductTile({
               <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
                 {product?.title}
               </h3>
-              {product?.sizes?.length > 0 && (
-                <div className="mb-1">
-                  <span className="text-sm font-medium text-gray-700">Available Sizes: </span>
-                  <span className="text-sm text-gray-600">
-                     {product.sizes.map(size => size).join(', ')}
-                  </span>
-                </div>
-              )}
-              <p className="text-sm text-gray-500">
-                {categoryOptionsMap[product?.category]}
-              </p>
+              <div className="space-y-1">
+                <p className="text-sm text-gray-500">
+                  {categoryOptionsMap[product?.category]}
+                </p>
+                {product?.sizes?.length > 0 && (
+                  <div className="flex items-start">
+                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap mr-1">
+                      Sizes: 
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {product.sizes.map((size, index) => (
+                        <span 
+                          key={index}
+                          className="text-sm text-gray-600 bg-gray-100 px-2 py-0.5 rounded"
+                        >
+                          {size}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
               <div className="flex items-baseline space-x-2 mt-1">
                 <span
                   className={`text-base font-medium ${

@@ -27,8 +27,8 @@ function ShoppingCheckout() {
     0
   );
 
-  const shippingFee = subtotal > 0 ? 0.0 : 0; // flat shipping
-  const tax = subtotal * 0.00; // 5% tax
+  const shippingFee = subtotal > 0 ? 15.0 : 0; // flat shipping
+  const tax = subtotal * 0.09; // 9% tax
   const total = (subtotal + shippingFee + tax).toFixed(2);
 
   useEffect(() => {
