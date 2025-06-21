@@ -163,7 +163,7 @@ dispatch(createNewOrder(orderData))
                 <span>${shippingFee.toFixed(2)}</span>
               </li>
               <li className="flex justify-between">
-                <span>Tax (5%)</span>
+                <span>Tax (9%)</span>
                 <span>${tax.toFixed(2)}</span>
               </li>
               <li className="flex justify-between font-bold text-lg pt-2 border-t">
