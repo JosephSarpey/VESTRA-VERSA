@@ -61,15 +61,24 @@ function AdminOrderDetailsView({orderDetails}) {
             <p className="font-medium">Order Status:</p>
             <Label>
               <Badge
-                className={`py-1 px-3 ${
-                  orderDetails?.orderStatus === "delivered"
-                    ? "bg-green-500" :
-                    orderDetails?.orderStatus === "rejected" ?  "bg-red-600" 
-                    : "bg-black"
-                }`}
-              >
-                {orderDetails?.orderStatus}
-              </Badge>
+  className={`py-1 px-3 ${
+ orderDetails?.orderStatus === "delivered"
+      ? "bg-green-500"
+      : orderDetails?.orderStatus === "rejected" || orderDetails?.orderStatus === "cancelled"
+      ? "bg-red-600"
+      : orderDetails?.orderStatus === "processing"
+      ? "bg-blue-500"
+      : orderDetails?.orderStatus === "shipped"
+      ? "bg-purple-500"
+      : orderDetails?.orderStatus === "confirmed"
+      ? "bg-yellow-500"
+      : orderDetails?.orderStatus === "cancelled"
+      ? "bg-red-600"
+      : "bg-gray-500"
+  }`}
+>
+  {orderDetails?.orderStatus === "confirmed" ? "Order Placed" : orderDetails?.orderStatus}
+</Badge>
             </Label>
           </div>
         </div>
@@ -113,12 +122,12 @@ function AdminOrderDetailsView({orderDetails}) {
                 name: "status",
                 componentType: "select",
                 options: [
-                  { id: "pending", label: "Pending" },
-                  { id: "In Process", label: "In Process" },
-                  { id: "Shipped", label: " Shipped" },
-                  { id: "delivered", label: "Delivered" },
                   { id: "confirmed", label: "Confirmed" },
+                  { id: "processing", label: "Processing" },
+                  { id: "shipped", label: "Shipped" },
+                  { id: "delivered", label: "Delivered" },
                   { id: "rejected", label: "Rejected" },
+                  { id: "cancelled", label: "Cancelled" },
                 ],
               },
             ]}

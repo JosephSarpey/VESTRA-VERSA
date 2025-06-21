@@ -8,7 +8,7 @@ import { Package, RefreshCw, Truck, CheckCircle2, XCircle } from "lucide-react";
 function OrderTimeline({ status }) {
   const statuses = [
     { 
-      id: 'pending', 
+      id: 'confirmed', 
       label: 'Order Placed', 
       icon: <Package className="h-4 w-4" /> 
     },
@@ -32,37 +32,76 @@ function OrderTimeline({ status }) {
   const cancelledStatus = { 
     id: 'cancelled', 
     label: 'Cancelled', 
-    icon: <XCircle className="h-4 w-4" /> 
+    icon: <XCircle className="h-4 w-4" />,
+    isTerminal: true
   };
 
+  const rejectedStatus = { 
+    id: 'rejected', 
+    label: 'Rejected', 
+    icon: <XCircle className="h-4 w-4" />,
+    isTerminal: true
+  };
+
+  // Clone the statuses array to avoid mutating the original
+  let timelineStatuses = [...statuses];
+  
+  // Add the terminal status if needed
   if (status === 'cancelled' || status === 'rejected') {
-    statuses.push(cancelledStatus);
+    timelineStatuses = timelineStatuses.filter(s => 
+      s.id === 'confirmed' || s.id === status
+    );
+    timelineStatuses.push(status === 'cancelled' ? cancelledStatus : rejectedStatus);
   }
 
-  const currentStatusIndex = statuses.findIndex(s => s.id === status);
+  const currentStatusIndex = timelineStatuses.findIndex(s => s.id === status);
 
   return (
     <div className="space-y-4">
       <h3 className="font-medium">Order Status</h3>
       <div className="relative">
-        <div className="absolute left-4 top-4 -bottom-4 w-0.5 bg-muted" />
+        <div className={`absolute left-4 top-4 -bottom-4 w-0.5 ${
+          status === 'cancelled' || status === 'rejected' 
+            ? 'bg-destructive/20' 
+            : 'bg-muted'
+        }`} />
         <div className="space-y-6">
-          {statuses.map((item, index) => {
+          {timelineStatuses.map((item, index) => {
             const isActive = index <= currentStatusIndex;
+            const isTerminal = item.isTerminal;
+            const isError = item.id === 'cancelled' || item.id === 'rejected';
+            
             return (
               <div key={item.id} className="relative flex gap-4">
                 <div 
                   className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                    isActive ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                    isActive 
+                      ? isError 
+                        ? 'bg-destructive text-destructive-foreground' 
+                        : 'bg-primary text-primary-foreground' 
+                      : 'bg-muted'
                   }`}
                 >
                   {item.icon}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium">{item.label}</p>
-                  {isActive && index === currentStatusIndex && (
-                    <p className="text-sm text-muted-foreground">
-                      Your order is {item.label.toLowerCase()}
+                  <p className={`text-sm font-medium ${
+                    isError ? 'text-destructive' : ''
+                  }`}>
+                    {item.label}
+                  </p>
+                  {isActive && (
+                    <p className={`text-sm ${
+                      isError ? 'text-destructive/80' : 'text-muted-foreground'
+                    }`}>
+                      {isTerminal 
+                        ? `Your order has been ${item.label.toLowerCase()}.`
+                        : `Your order is ${item.label.toLowerCase()}.`}
+                      {isError && (
+                        <span className="block mt-1 text-sm text-muted-foreground">
+                          Please contact support if you need assistance.
+                        </span>
+                      )}
                     </p>
                   )}
                 </div>
@@ -77,7 +116,7 @@ function OrderTimeline({ status }) {
 
 function OrderStatusBadge({ status }) {
   const statusColors = {
-    pending: "bg-yellow-500",
+    confirmed: "bg-yellow-500",
     processing: "bg-blue-500",
     shipped: "bg-purple-500",
     delivered: "bg-green-500",
@@ -85,9 +124,24 @@ function OrderStatusBadge({ status }) {
     cancelled: "bg-red-600"
   };
 
+  const statusLabels = {
+    confirmed: "Order Placed",
+    processing: "Processing",
+    shipped: "Shipped",
+    delivered: "Delivered",
+    rejected: "Rejected",
+    cancelled: "Cancelled"
+  };
+
   return (
-    <Badge className={`py-1 px-3 ${statusColors[status] || "bg-gray-500"}`}>
-      {status}
+    <Badge 
+      className={`py-1 px-3 ${
+        statusColors[status] || "bg-gray-500"
+      } ${
+        (status === 'rejected' || status === 'cancelled') ? 'hover:bg-red-700' : ''
+      }`}
+    >
+      {statusLabels[status] || status}
     </Badge>
   );
 }
