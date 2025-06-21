@@ -30,6 +30,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const handleRatingChange = (getRating) => setRating(getRating);
 
   const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+    if (!user?.id) {
+      toast.info("Please login to add items to cart");
+      return;
+    }
+
     if (productDetails?.sizes?.length > 0 && !selectedSize) {
       toast.error("Please select a size");
       return;

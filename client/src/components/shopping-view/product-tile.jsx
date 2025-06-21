@@ -8,6 +8,8 @@ import { ShoppingCart, CheckCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 function ShoppingProductTile({
   product,
@@ -15,13 +17,19 @@ function ShoppingProductTile({
   handleAddToCart,
   isLoading = false,
 }) {
+  const { user } = useSelector((state) => state.auth);
   const [added, setAdded] = useState(false);
   const isOutOfStock = product?.totalStock === 0;
   const isLowStock = product?.totalStock < 10;
   const isOnSale = product?.salePrice > 0;
+  const isLoggedIn = !!user?.id;
 
   const handleCartClick = () => {
     if (!isOutOfStock) {
+      if (!isLoggedIn) {
+        toast.info("Please login to add items to cart");
+        return;
+      }
       handleAddToCart(product?._id, product?.totalStock);
       setAdded(true);
     }
@@ -133,14 +141,15 @@ function ShoppingProductTile({
         ) : (
           <motion.button
             whileTap={{ scale: 0.95 }}
-            onClick={() => !isLoading && handleGetProductDetails(product?._id)}
+            onClick={handleCartClick}
             className={`cursor-pointer w-full flex items-center justify-center gap-2 text-white font-semibold py-2 rounded-lg transition-all duration-300 ${
               isOutOfStock
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-primary hover:bg-primary/90 hover:shadow-lg"
             }`}
           >
-            <span>View Product Details</span>
+            <ShoppingCart className="w-5 h-5" />
+            <span>Add to Cart</span>
           </motion.button>
         )}
       </CardFooter>

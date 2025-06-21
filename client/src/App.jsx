@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import StructuredData from "./components/seo/StructuredData";
@@ -52,15 +52,7 @@ function App() {
       
       <div className="flex flex-col overflow-hidden bg-white min-h-screen">
         <Routes location={location} key={location.pathname}>
-          <Route
-            path="/"
-            element={
-              <CheckAuth
-                isAuthenticated={isAuthenticated}
-                user={user}
-              />
-            }
-          />
+          <Route path="/" element={<Navigate to="/shop/home" replace />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/activate" element={<OtpActivation />} />
