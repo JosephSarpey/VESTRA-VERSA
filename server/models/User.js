@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
   activationOtp: String,
   activationOtpExpires: Date,
   isActivated: { type: Boolean, default: false },
-});
+}, { timestamps: true });
 
 const User = mongoose.model("User", UserSchema);
 module.exports = User;

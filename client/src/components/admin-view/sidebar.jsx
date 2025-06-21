@@ -1,5 +1,6 @@
 import {
   BadgeCheck,
+  ChartNoAxesCombined,
   CircleGauge,
   ShieldUser,
   ShoppingBasket,
@@ -27,6 +28,12 @@ const adminSidebarMenuItems = [
     label: "Orders",
     path: "/admin/orders",
     icon: <BadgeCheck />,
+  },
+  {
+    id: "analytics",
+    label: "Analytics",
+    path: "/admin/analytics",
+    icon: <ChartNoAxesCombined />,
   },
 ];
 
