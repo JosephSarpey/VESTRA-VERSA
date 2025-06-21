@@ -12,7 +12,7 @@ export const getFeatureImages = createAsyncThunk(
   "commonFeature/getFeatureImages",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get("/api/feature/get");
+      const response = await axios.get("/api/common/feature/get");
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -25,7 +25,7 @@ export const addFeatureImage = createAsyncThunk(
   "commonFeature/addFeatureImage",
   async (image, thunkAPI) => {
     try {
-      const response = await axios.post("/api/feature/add", { image });
+      const response = await axios.post("/api/common/feature/add", { image });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -38,7 +38,7 @@ export const deleteFeatureImage = createAsyncThunk(
   "commonFeature/deleteFeatureImage",
   async (id, thunkAPI) => {
     try {
-      const response = await axios.delete(`/api/feature/delete/${id}`);
+      const response = await axios.delete(`/api/common/feature/delete/${id}`);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
