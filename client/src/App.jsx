@@ -31,6 +31,7 @@ import ContactPage from './pages/shopping-view/contact';
 import PrivacyPolicy from './pages/shopping-view/privacy-policy';
 import TermsOfService from './pages/shopping-view/terms-of-service';
 import AboutPage from './pages/shopping-view/about';
+import AdminAnalytics from "./pages/admin-view/AdminAnalytics";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
