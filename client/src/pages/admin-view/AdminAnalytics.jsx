@@ -67,7 +67,7 @@ const AdminAnalytics = () => {
         </div>
         <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center">
           <span className="text-gray-500 text-sm">Total Sales</span>
-          <span className="text-2xl font-bold text-green-600">₦{totalSales.toLocaleString()}</span>
+          <span className="text-2xl font-bold text-green-600">${totalSales.toLocaleString()}</span>
         </div>
         <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center">
           <span className="text-gray-500 text-sm">
@@ -79,7 +79,7 @@ const AdminAnalytics = () => {
           <span className="text-gray-500 text-sm">
             Revenue ({groupBy === "week" ? "This Week" : "This Month"})
           </span>
-          <span className="text-2xl font-bold text-yellow-600">₦{revenueThisPeriod.toLocaleString()}</span>
+          <span className="text-2xl font-bold text-yellow-600">${revenueThisPeriod.toLocaleString()}</span>
         </div>
       </div>
 
