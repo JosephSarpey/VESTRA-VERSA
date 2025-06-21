@@ -33,8 +33,10 @@ const getSalesOverTime = async (req, res) => {
       ? { $dateToString: { format: "%Y-%m", date: "$orderDate" } }
       : { $dateToString: { format: "%G-%V", date: "$orderDate" } };
 
+    const SUCCESS_STATUS = "paid";
+
     const result = await Order.aggregate([
-      { $match: { orderDate: { $exists: true } } },
+      { $match: { orderDate: { $exists: true }, paymentStatus: SUCCESS_STATUS } },
       { $group: {
         _id: groupId,
         totalSales: { $sum: "$totalAmount" },
