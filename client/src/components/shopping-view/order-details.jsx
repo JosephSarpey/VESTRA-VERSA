@@ -164,7 +164,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
               {orderDetails.cartItems?.map((item) => (
                 <div key={item._id} className="flex items-center gap-4">
                   <img
-                    src={item.product?.images?.[0]?.url || '/placeholder-product.jpg'}
+                    src={item.image || '/placeholder-product.jpg'}
                     alt={item.title}
                     className="h-16 w-16 rounded-md object-cover"
                   />

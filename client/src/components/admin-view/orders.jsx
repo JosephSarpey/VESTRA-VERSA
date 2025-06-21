@@ -102,7 +102,7 @@ function AdminOrdersView() {
                         {orderItem.cartItems?.slice(0, 3).map((item, i) => (
                           <img
                             key={i}
-                            src={item.product?.images?.[0]?.url || '/placeholder-product.jpg'}
+                            src={item.image || '/placeholder-product.jpg'}
                             alt={item.product?.name || 'Product'}
                             className="w-8 h-8 rounded-full object-cover border-2 border-background"
                           />

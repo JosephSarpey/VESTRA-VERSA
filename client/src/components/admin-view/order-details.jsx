@@ -9,29 +9,29 @@ import { getAllOrdersForAdmin, getOrderDetailsForAdmin, updateOrderStatus } from
 import { toast } from "sonner";
 
 const initialFormData = {
-    status : ''
+  status: ''
 }
 
-function AdminOrderDetailsView({orderDetails}) {
+function AdminOrderDetailsView({ orderDetails }) {
 
-    const [formData, setFormData] = useState(initialFormData)
-    const dispatch = useDispatch();
+  const [formData, setFormData] = useState(initialFormData)
+  const dispatch = useDispatch();
 
-    function handlleUpdateStatus(event) {
-        event.preventDefault();
-        const {status} = formData;
+  function handlleUpdateStatus(event) {
+    event.preventDefault();
+    const { status } = formData;
 
 
-        dispatch(updateOrderStatus({id : orderDetails?._id, orderStatus : status})).then(data=> {
-          
-          if (data?.payload?.success) {
-            dispatch(getOrderDetailsForAdmin(orderDetails?._id))
-            dispatch(getAllOrdersForAdmin(orderDetails?._id))
-            setFormData(initialFormData)
-            toast.success(data?.payload?.message)
-          }
-        })
-    }
+    dispatch(updateOrderStatus({ id: orderDetails?._id, orderStatus: status })).then(data => {
+
+      if (data?.payload?.success) {
+        dispatch(getOrderDetailsForAdmin(orderDetails?._id))
+        dispatch(getAllOrdersForAdmin(orderDetails?._id))
+        setFormData(initialFormData)
+        toast.success(data?.payload?.message)
+      }
+    })
+  }
 
   return (
     <DialogContent className="sm:max-w-[600px]">
@@ -61,24 +61,23 @@ function AdminOrderDetailsView({orderDetails}) {
             <p className="font-medium">Order Status:</p>
             <Label>
               <Badge
-  className={`py-1 px-3 ${
- orderDetails?.orderStatus === "delivered"
-      ? "bg-green-500"
-      : orderDetails?.orderStatus === "rejected" || orderDetails?.orderStatus === "cancelled"
-      ? "bg-red-600"
-      : orderDetails?.orderStatus === "processing"
-      ? "bg-blue-500"
-      : orderDetails?.orderStatus === "shipped"
-      ? "bg-purple-500"
-      : orderDetails?.orderStatus === "confirmed"
-      ? "bg-yellow-500"
-      : orderDetails?.orderStatus === "cancelled"
-      ? "bg-red-600"
-      : "bg-gray-500"
-  }`}
->
-  {orderDetails?.orderStatus === "confirmed" ? "Order Placed" : orderDetails?.orderStatus}
-</Badge>
+                className={`py-1 px-3 ${orderDetails?.orderStatus === "delivered"
+                    ? "bg-green-500"
+                    : orderDetails?.orderStatus === "rejected" || orderDetails?.orderStatus === "cancelled"
+                      ? "bg-red-600"
+                      : orderDetails?.orderStatus === "processing"
+                        ? "bg-blue-500"
+                        : orderDetails?.orderStatus === "shipped"
+                          ? "bg-purple-500"
+                          : orderDetails?.orderStatus === "confirmed"
+                            ? "bg-yellow-500"
+                            : orderDetails?.orderStatus === "cancelled"
+                              ? "bg-red-600"
+                              : "bg-gray-500"
+                  }`}
+              >
+                {orderDetails?.orderStatus === "confirmed" ? "Order Placed" : orderDetails?.orderStatus}
+              </Badge>
             </Label>
           </div>
         </div>
@@ -89,12 +88,12 @@ function AdminOrderDetailsView({orderDetails}) {
             <ul className="grid gap-3">
               {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                 ? orderDetails?.cartItems.map((item) => (
-                    <li className="flex items-center justify-between">
-                      <span>Title: {item.title}</span>
-                      <span>Quantity: {item.quantity}</span>
-                      <span>Price: ${item.price}</span>
-                    </li>
-                  ))
+                  <li className="flex items-center justify-between">
+                    <span>Title: {item.title}</span>
+                    <span>Quantity: {item.quantity}</span>
+                    <span>Price: ${item.price}</span>
+                  </li>
+                ))
                 : null}
             </ul>
           </div>
