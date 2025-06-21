@@ -44,7 +44,7 @@ function ShoppingOrders() {
   const { user } = useSelector((state) => state.auth);
   const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
 
-  const filteredOrders = orderList?.filter(order => 
+  const filteredOrders = orderList?.filter(order =>
     order._id.toLowerCase().includes(searchQuery.toLowerCase()) ||
     order.orderStatus.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
@@ -99,7 +99,12 @@ function ShoppingOrders() {
                     <TableCell>
                       <div className="flex -space-x-2">
                         {orderItem.cartItems?.slice(0, 3).map((item, i) => (
-                          <div key={i} className="w-8 h-8 rounded-full bg-muted border-2 border-background" />
+                          <img
+                            key={i}
+                            src={item.product?.images?.[0]?.url || '/placeholder-product.jpg'}
+                            alt={item.product?.name || 'Product'}
+                            className="w-8 h-8 rounded-full object-cover border-2 border-background"
+                          />
                         ))}
                         {orderItem.cartItems?.length > 3 && (
                           <div className="w-8 h-8 rounded-full bg-muted border-2 border-background flex items-center justify-center text-xs">

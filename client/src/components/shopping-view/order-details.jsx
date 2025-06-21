@@ -163,7 +163,11 @@ function ShoppingOrderDetailsView({ orderDetails }) {
             <div className="space-y-4">
               {orderDetails.cartItems?.map((item) => (
                 <div key={item._id} className="flex items-center gap-4">
-                  <div className="h-16 w-16 rounded-md bg-muted" />
+                  <img
+                    src={item.product?.images?.[0]?.url || '/placeholder-product.jpg'}
+                    alt={item.title}
+                    className="h-16 w-16 rounded-md object-cover"
+                  />
                   <div className="flex-1">
                     <p className="font-medium">{item.title}</p>
                     <p className="text-sm text-muted-foreground">
