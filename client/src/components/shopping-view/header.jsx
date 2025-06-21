@@ -151,7 +151,7 @@ function HeaderRightContent({ onCartClick, onCloseMenu }) {
           onClick={handleUserAvatarClick}
           className="cursor-pointer"
         >
-          Login
+          Login/Register
         </Button>
       )}
     </div>
