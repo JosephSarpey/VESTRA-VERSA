@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 function ShoppingProductTile({
   product,
@@ -23,11 +24,13 @@ function ShoppingProductTile({
   const isLowStock = product?.totalStock < 10;
   const isOnSale = product?.salePrice > 0;
   const isLoggedIn = !!user?.id;
+  const navigate = useNavigate();
 
   const handleCartClick = () => {
     if (!isOutOfStock) {
       if (!isLoggedIn) {
-        toast.info("Please login to add items to cart");
+        // Redirect to login with the current path to return after login
+        navigate(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
         return;
       }
       handleAddToCart(product?._id, product?.totalStock);

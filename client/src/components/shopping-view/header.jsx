@@ -72,7 +72,7 @@ function MenuItems({ setOpenSheet, activePath }) {
 
 // HeaderRightContent component (no cart state here)
 function HeaderRightContent({ onCartClick, onCloseMenu }) {
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -82,14 +82,27 @@ function HeaderRightContent({ onCartClick, onCloseMenu }) {
     if (onCloseMenu) onCloseMenu();
   }
 
+  const handleUserAvatarClick = () => {
+    if (!isAuthenticated) {
+      navigate(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+  };
+
   useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [dispatch, user?.id]);
+    if (isAuthenticated) {
+      dispatch(fetchCartItems(user?.id));
+    }
+  }, [dispatch, user?.id, isAuthenticated]);
 
   return (
     <div className="flex items-center gap-4">
       <Button
         onClick={() => {
+          if (!isAuthenticated) {
+            navigate(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+            return;
+          }
           onCartClick();
           if (onCloseMenu) onCloseMenu();
         }}
@@ -99,38 +112,48 @@ function HeaderRightContent({ onCartClick, onCloseMenu }) {
       >
         <ShoppingCart className="w-6 h-6" />
         <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
-          {cartItems?.items?.length || "0"}
+          {isAuthenticated ? (cartItems?.items?.length || "0") : "0"}
         </span>
       </Button>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className="bg-black cursor-pointer">
-            <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.userName[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => {
-              navigate("/shop/account");
-              if (onCloseMenu) onCloseMenu();
-            }}
-          >
-            <UserCheck className="mr-2 h-4 w-4" />
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {isAuthenticated ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="bg-black cursor-pointer">
+              <AvatarFallback className="bg-black text-white font-extrabold">
+                {user?.userName[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="right" className="w-56">
+            <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
+                navigate("/shop/account");
+                if (onCloseMenu) onCloseMenu();
+              }}
+            >
+              <UserCheck className="mr-2 h-4 w-4" />
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Button 
+          variant="outline" 
+          onClick={handleUserAvatarClick}
+          className="cursor-pointer"
+        >
+          Login
+        </Button>
+      )}
     </div>
   );
 }
