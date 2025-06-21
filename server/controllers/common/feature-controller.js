@@ -32,7 +32,7 @@ const getFeatureImages = async (req, res) => {
       data: images,
     });
   } catch (e) {
-    console.log(e)
+    console.log(e);
     res.status(500).json({
       success: false,
       message: "Some error occurred!",
@@ -40,4 +40,15 @@ const getFeatureImages = async (req, res) => {
   }
 };
 
-module.exports = { addFeatureImage, getFeatureImages };
+const deleteFeatureImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Feature.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: "Feature deleted" });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ success: false, message: "Some error occurred!" });
+  }
+};
+
+module.exports = { addFeatureImage, getFeatureImages, deleteFeatureImage };

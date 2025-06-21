@@ -4,48 +4,90 @@ import axios from "axios";
 const initialState = {
   isLoading: false,
   featureImageList: [],
+  error: null,
 };
 
+// Fetch all feature images
 export const getFeatureImages = createAsyncThunk(
-  "/order/getFeatureImages",
-  async () => {
-    const response = await axios.get(
-      `/api/common/feature/get`
-    );
-
-    return response.data;
+  "commonFeature/getFeatureImages",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get("/api/feature/get");
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+    }
   }
 );
 
+// Add a new feature image
 export const addFeatureImage = createAsyncThunk(
-  "/order/addFeatureImage",
-  async (image) => {
-    const response = await axios.post(
-      `/api/common/feature/add`,
-      {image}
-    );
+  "commonFeature/addFeatureImage",
+  async (image, thunkAPI) => {
+    try {
+      const response = await axios.post("/api/feature/add", { image });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 
-    return response.data;
+// Delete a feature image by ID
+export const deleteFeatureImage = createAsyncThunk(
+  "commonFeature/deleteFeatureImage",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.delete(`/api/feature/delete/${id}`);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+    }
   }
 );
 
 const commonSlice = createSlice({
-  name: "commonSlice",
+  name: "commonFeature",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      // Fetch
       .addCase(getFeatureImages.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(getFeatureImages.fulfilled, (state, action) => {
-        state.isLoading = false, 
-        state.featureImageList = action.payload.data;
+        state.isLoading = false;
+        state.featureImageList = action.payload.data || [];
       })
-      .addCase(getFeatureImages.rejected, (state) => {
-        state.isLoading = false, 
-        state.featureImageList = [];
+      .addCase(getFeatureImages.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || action.error.message;
+      })
+      // Add
+      .addCase(addFeatureImage.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(addFeatureImage.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(addFeatureImage.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || action.error.message;
+      })
+      // Delete
+      .addCase(deleteFeatureImage.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteFeatureImage.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteFeatureImage.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || action.error.message;
       });
   },
 });
