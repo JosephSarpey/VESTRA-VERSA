@@ -34,23 +34,24 @@ function MenuItems({ setOpenSheet, activePath }) {
 
   function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
-    const currentFilter =
+  
+    // Only treat as a filter if the menu item is a product category
+    const isCategoryLink =
       getCurrentMenuItem.id !== "home" &&
-        getCurrentMenuItem.id !== "products" &&
-        getCurrentMenuItem.id !== "search"
-        ? {
-          category: [getCurrentMenuItem.id],
-        }
-        : null;
-
-    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
-
-    if (location.pathname.includes("listing") && currentFilter !== null) {
+      getCurrentMenuItem.id !== "products" &&
+      getCurrentMenuItem.id !== "search" &&
+      getCurrentMenuItem.path === "/shop/listing";
+  
+    if (isCategoryLink) {
+      // Update filters and query params for category links
+      const currentFilter = { category: [getCurrentMenuItem.id] };
+      sessionStorage.setItem("filters", JSON.stringify(currentFilter));
       setSearchParams(new URLSearchParams(`?category=${getCurrentMenuItem.id}`));
     } else {
+      // For all other links, navigate normally
       navigate(getCurrentMenuItem.path);
     }
-
+  
     if (setOpenSheet) setOpenSheet(false);
   }
 

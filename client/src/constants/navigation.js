@@ -5,6 +5,7 @@ export const NAV_LINKS = [
   { name: 'About Us', path: '/shop/about' },
   { name: 'Privacy Policy', path: '/privacy-policy' },
   { name: 'Terms of Service', path: '/terms' },
+  { name: 'Sitemap', path: '/sitemap' },
 ];
 
 export const SOCIAL_LINKS = [
