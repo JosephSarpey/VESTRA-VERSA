@@ -32,6 +32,7 @@ import PrivacyPolicy from './pages/shopping-view/privacy-policy';
 import TermsOfService from './pages/shopping-view/terms-of-service';
 import AboutPage from './pages/shopping-view/about';
 import AdminAnalytics from "./pages/admin-view/AdminAnalytics";
+import Sitemap from "./pages/shopping-view/Sitemap";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -109,6 +110,7 @@ function App() {
           {/* Public routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/sitemap" element={<Sitemap />} />
           
           <Route path="*" element={<NotFound />} />
           <Route path="/unauth-page" element={<UnauthPage />} />

@@ -39,6 +39,6 @@ export const COMPANY_INFO = {
   description: 'Shop smart. Shop Fast. Your favorite online store.',
   copyright: `© ${new Date().getFullYear()} VESTRA VERSA. All rights reserved.`,
   address: 'Main Street, 10801, New Rochelle, New York, NY, USA',
-  email: 'vestraversa@gmail.com',
+  email: 'support@vestraversa.com',
   phone: '+1(914)5695621',
 };

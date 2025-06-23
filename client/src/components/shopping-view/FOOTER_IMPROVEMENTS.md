@@ -92,7 +92,7 @@ src/
 
 ## 📝 Usage
 
-Import and use the Footer component in your layout:
+Import and use the Footer component in the layout:
 
 ```jsx
 import Footer from './components/shopping-view/footer';
