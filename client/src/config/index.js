@@ -112,26 +112,6 @@ export const shoppingViewHeaderMenuItems = [
     path: "/shop/listing",
   },
   {
-    id: "men",
-    label: "Men",
-    path: "/shop/listing",
-  },
-  {
-    id: "women",
-    label: "Women",
-    path: "/shop/listing",
-  },
-  {
-    id: "bags",
-    label: "Bags",
-    path: "/shop/listing",
-  },
-  {
-    id: "footwear",
-    label: "Footwear",
-    path: "/shop/listing",
-  },
-  {
     id: "about",
     label: "About Us",
     path: "/shop/about",
@@ -144,6 +124,16 @@ export const shoppingViewHeaderMenuItems = [
   { id: "search",
     label: "Search",
     path: "/shop/search", 
+  },
+  {
+    id:"privacy-policy",
+    label:"Privacy Policy",
+    path:"/privacy-policy"
+  },
+  {
+    id:"terms",
+    label:"Terms of Service",
+    path:"/terms"
   },
 ];
 
