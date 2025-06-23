@@ -71,8 +71,8 @@ router.post('/', async (req, res) => {
               <tr>
                 <td style="padding: 20px; text-align: center; font-size: 13px; color: #888;">
                   <p>Need help? Contact your site admin.</p>
-                  <p style="margin-top: 10px;"><strong>Your Website Team</strong></p>
-                  <p style="margin-top: 20px;">© ${new Date().getFullYear()} YourWebsite. All rights reserved.</p>
+                  <p style="margin-top: 10px;"><strong>The Vestra Versa Team</strong></p>
+                  <p style="margin-top: 20px;">© ${new Date().getFullYear()} www.vestraversa.com. All rights reserved.</p>
                 </td>
               </tr>
             </table>

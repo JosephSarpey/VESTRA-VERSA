@@ -2,27 +2,29 @@
 import React from "react";
 import { motion } from "framer-motion";
 import logo from "../../assets/vv_logo.jpg"; // Using your existing logo import
+import { FaGem, FaLightbulb, FaLeaf, FaHandshake } from "react-icons/fa";
+import Footer from "@/components/shopping-view/footer";
 
 const brandValues = [
   {
     title: "Quality",
     description: "We use only the finest materials to ensure every piece is crafted to perfection.",
-    icon: "🪡",
+    icon: <FaGem className="text-4xl mb-3 text-amber-600" />,
   },
   {
     title: "Innovation",
     description: "Our designs blend timeless elegance with modern trends.",
-    icon: "✨",
+    icon: <FaLightbulb className="text-4xl mb-3 text-yellow-500" />,
   },
   {
     title: "Sustainability",
     description: "We are committed to ethical sourcing and eco-friendly practices.",
-    icon: "🌱",
+    icon: <FaLeaf className="text-4xl mb-3 text-green-600" />,
   },
   {
     title: "Customer Focus",
     description: "Your satisfaction inspires everything we do.",
-    icon: "🤝",
+    icon: <FaHandshake className="text-4xl mb-3 text-blue-600" />,
   },
 ];
 
@@ -145,6 +147,7 @@ export default function AboutPage() {
           </div>
         </motion.section>
       </main>
+      <Footer />
     </div>
   );
 }
