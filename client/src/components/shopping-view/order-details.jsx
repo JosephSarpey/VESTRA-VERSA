@@ -173,6 +173,9 @@ function ShoppingOrderDetailsView({ orderDetails }) {
                     <p className="text-sm text-muted-foreground">
                       Qty: {item.quantity} × ${item.price}
                     </p>
+                    <p className="text-sm text-muted-foreground">
+                      Size: {item.size || "N/A"}
+                    </p>
                   </div>
                   <p className="font-medium">${(item.quantity * item.price).toFixed(2)}</p>
                 </div>

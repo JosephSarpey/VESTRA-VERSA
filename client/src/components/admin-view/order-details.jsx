@@ -62,18 +62,18 @@ function AdminOrderDetailsView({ orderDetails }) {
             <Label>
               <Badge
                 className={`py-1 px-3 ${orderDetails?.orderStatus === "delivered"
-                    ? "bg-green-500"
-                    : orderDetails?.orderStatus === "rejected" || orderDetails?.orderStatus === "cancelled"
-                      ? "bg-red-600"
-                      : orderDetails?.orderStatus === "processing"
-                        ? "bg-blue-500"
-                        : orderDetails?.orderStatus === "shipped"
-                          ? "bg-purple-500"
-                          : orderDetails?.orderStatus === "confirmed"
-                            ? "bg-yellow-500"
-                            : orderDetails?.orderStatus === "cancelled"
-                              ? "bg-red-600"
-                              : "bg-gray-500"
+                  ? "bg-green-500"
+                  : orderDetails?.orderStatus === "rejected" || orderDetails?.orderStatus === "cancelled"
+                    ? "bg-red-600"
+                    : orderDetails?.orderStatus === "processing"
+                      ? "bg-blue-500"
+                      : orderDetails?.orderStatus === "shipped"
+                        ? "bg-purple-500"
+                        : orderDetails?.orderStatus === "confirmed"
+                          ? "bg-yellow-500"
+                          : orderDetails?.orderStatus === "cancelled"
+                            ? "bg-red-600"
+                            : "bg-gray-500"
                   }`}
               >
                 {orderDetails?.orderStatus === "confirmed" ? "Order Placed" : orderDetails?.orderStatus}
@@ -90,6 +90,7 @@ function AdminOrderDetailsView({ orderDetails }) {
                 ? orderDetails?.cartItems.map((item) => (
                   <li className="flex items-center justify-between">
                     <span>Title: {item.title}</span>
+                    <span>Size: {item.size || "N/A"}</span>
                     <span>Quantity: {item.quantity}</span>
                     <span>Price: ${item.price}</span>
                   </li>

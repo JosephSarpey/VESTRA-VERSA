@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 const sendMail = async (to, subject, html) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `"Vestra Versa Fashion Hub" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html,
