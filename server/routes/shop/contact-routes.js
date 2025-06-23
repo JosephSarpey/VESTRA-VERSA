@@ -4,10 +4,12 @@ const nodemailer = require('nodemailer');
 
 // Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: true,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.CONTACT_EMAIL,
+    pass: process.env.CONTACT_EMAIL_PASS,
   },
 });
 
@@ -22,10 +24,10 @@ router.post('/', async (req, res) => {
     }
 
     const mailOptions = {
-      from: `"${name}" <${process.env.EMAIL_USER}>`,
-      to: process.env.CONTACT_EMAIL || process.env.EMAIL_USER,
+      from: `"${name}" <${process.env.CONTACT_EMAIL}>`,
+      to: process.env.CONTACT_EMAIL,
       replyTo: email,
-      subject: `New Contact Form: ${subject}`,
+      subject: `New Contact Form Submission From ${name} - ${subject}`,
       html: `
   <!DOCTYPE html>
   <html>
@@ -55,7 +57,7 @@ router.post('/', async (req, res) => {
                   <p><strong>Email:</strong> ${email}</p>
                   <p><strong>Subject:</strong> ${subject}</p>
 
-                  <h3 style="color: #FFD700; margin-top: 30px;">Message</h3>
+                  <h3 style="color:rgb(51, 4, 4); margin-top: 30px;">Message</h3>
                   <p style="line-height: 1.6; white-space: pre-line;">${message}</p>
 
                   <!-- Reply Button -->
