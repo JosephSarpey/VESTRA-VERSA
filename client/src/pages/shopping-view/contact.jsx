@@ -159,7 +159,7 @@ export default function ContactPage() {
                   <FaWhatsapp className="h-5 w-5 text-gray-600" />
                   <div>
                     <h3 className="font-medium">WhatsApp</h3>
-                    <a href="https://wa.me/+1 (914) 569-5621" className="text-sm text-gray-600 hover:underline">Reach Us on WhatsApp</a>
+                    <a href="https://wa.me/19145695621" className="text-sm text-gray-600 hover:underline">Reach Us on WhatsApp</a>
                   </div>
                 </div>
               </div>
