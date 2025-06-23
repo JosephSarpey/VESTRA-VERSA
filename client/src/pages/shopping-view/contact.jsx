@@ -153,7 +153,7 @@ export default function ContactPage() {
                   <Mail className="h-5 w-5 text-amber-500" />
                   <div>
                     <h3 className="font-medium">Email</h3>
-                    <a href="mailto:vestraversa@gmail.com" className="text-sm text-gray-600 hover:underline">vestraversa@gmail.com</a>
+                    <a href="mailto:support@vestraversa.com" className="text-sm text-gray-600 hover:underline">support@vestraversa.com</a>
                   </div>
                 </div>
 
