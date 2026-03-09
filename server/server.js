@@ -29,7 +29,6 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// In server.js, update the cors configuration to:
 app.use(
   cors({
     origin: [
