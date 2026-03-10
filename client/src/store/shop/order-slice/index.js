@@ -21,13 +21,25 @@ export const createNewOrder = createAsyncThunk(
   }
 );
 
+export const retryPayment = createAsyncThunk(
+  "/order/retryPayment",
+  async (orderId) => {
+    const response = await axios.post(
+      "/api/shop/order/retry",
+      { orderId }
+    );
+
+    return response.data;
+  }
+);
+
 export const capturePayment = createAsyncThunk(
   "/order/capturePayment",
-  async ({ paymentId, payerId, orderId }, { rejectWithValue }) => {
+  async ({ sessionId, orderId }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         "/api/shop/order/capture",
-        { paymentId, payerId, orderId }
+        { sessionId, orderId }
       );
       return response.data;
     } catch (error) {
@@ -86,6 +98,23 @@ const shoppingOrderSlice = createSlice({
       })
       .addCase(createNewOrder.rejected, (state) => {
         state.isLoading = false,
+        state.approvalURL = null;
+        state.orderId = null;
+      })
+      .addCase(retryPayment.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(retryPayment.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.approvalURL = action.payload.approvalURL;
+        state.orderId = action.payload.orderId;
+        sessionStorage.setItem(
+          "currentOrderId",
+          JSON.stringify(action.payload.orderId)
+        );
+      })
+      .addCase(retryPayment.rejected, (state) => {
+        state.isLoading = false;
         state.approvalURL = null;
         state.orderId = null;
       })

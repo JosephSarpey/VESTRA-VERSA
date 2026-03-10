@@ -1,9 +1,14 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
-import { Package, RefreshCw, Truck, CheckCircle2, XCircle } from "lucide-react";
+import { Package, RefreshCw, Truck, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { Button } from "../ui/button";
+import { retryPayment } from "@/store/shop/order-slice";
+import { toast } from "sonner";
+import { BiCreditCardAlt } from "react-icons/bi";
 
 function OrderTimeline({ status }) {
   const statuses = [
@@ -148,6 +153,23 @@ function OrderStatusBadge({ status }) {
 
 function ShoppingOrderDetailsView({ orderDetails }) {
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [isRetrying, setIsRetrying] = useState(false);
+
+  const handleRetryPayment = () => {
+    setIsRetrying(true);
+    dispatch(retryPayment(orderDetails._id)).then((data) => {
+      if (data?.payload?.success) {
+        window.location.href = data.payload.approvalURL;
+      } else {
+        setIsRetrying(false);
+        toast.error(data?.payload || "Failed to initialize retry payment. Please try again.");
+      }
+    }).catch(() => {
+        setIsRetrying(false);
+        toast.error("Failed to initialize retry payment. Please try again.");
+    });
+  };
 
   if (!orderDetails) return null;
 
@@ -239,6 +261,25 @@ function ShoppingOrderDetailsView({ orderDetails }) {
                 <OrderStatusBadge status={orderDetails.paymentStatus} />
               </div>
             </div>
+            {orderDetails.paymentStatus === 'pending' && (
+              <Button
+                onClick={handleRetryPayment}
+                disabled={isRetrying}
+                className="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow flex justify-center items-center gap-2"
+              >
+                {isRetrying ? (
+                  <>
+                    <Loader2 className="animate-spin w-4 h-4" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <BiCreditCardAlt className="text-xl" />
+                    Retry Payment with Stripe
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </div>

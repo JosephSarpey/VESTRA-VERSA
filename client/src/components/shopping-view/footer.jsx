@@ -1,26 +1,36 @@
-import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp, FaChevronUp } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaTwitter,
+  FaWhatsapp,
+  FaChevronUp,
+} from "react-icons/fa";
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { NAV_LINKS, SOCIAL_LINKS, COMPANY_INFO } from "../../constants/navigation";
+import {
+  NAV_LINKS,
+  SOCIAL_LINKS,
+  COMPANY_INFO,
+} from "../../constants/navigation";
 import { scrollToTop } from "../../utils/scrollToTop";
 
 function Footer() {
   const location = useLocation();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
     // TODO: Implement newsletter subscription logic
-    console.log('Subscribing with email:', email);
+    console.log("Subscribing with email:", email);
     setIsSubscribed(true);
-    setEmail('');
+    setEmail("");
     setTimeout(() => setIsSubscribed(false), 3000);
   };
 
   return (
-    <footer 
+    <footer
       className="bg-gray-900 text-white pt-12 pb-6 px-4 relative"
       role="contentinfo"
       aria-label="Footer"
@@ -30,7 +40,7 @@ function Footer() {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">{COMPANY_INFO.name}</h2>
           <p className="text-gray-400">{COMPANY_INFO.description}</p>
-          
+
           <div className="space-y-2 mt-4">
             <div className="flex items-center space-x-2 text-gray-300">
               <FiMapPin className="flex-shrink-0" />
@@ -38,13 +48,19 @@ function Footer() {
             </div>
             <div className="flex items-center space-x-2 text-gray-300">
               <FiMail className="flex-shrink-0" />
-              <a href={`mailto:${COMPANY_INFO.email}`} className="hover:underline">
+              <a
+                href={`mailto:${COMPANY_INFO.email}`}
+                className="hover:underline"
+              >
                 {COMPANY_INFO.email}
               </a>
             </div>
             <div className="flex items-center space-x-2 text-gray-300">
               <FiPhone className="flex-shrink-0" />
-              <a href={`tel:${COMPANY_INFO.phone.replace(/\s+/g, '')}`} className="hover:underline">
+              <a
+                href={`tel:${COMPANY_INFO.phone.replace(/\s+/g, "")}`}
+                className="hover:underline"
+              >
                 {COMPANY_INFO.phone}
               </a>
             </div>
@@ -60,9 +76,13 @@ function Footer() {
                 <Link
                   to={link.path}
                   className={`text-gray-400 hover:text-white transition-colors ${
-                    location.pathname === link.path ? 'text-white font-medium' : ''
+                    location.pathname === link.path
+                      ? "text-white font-medium"
+                      : ""
                   }`}
-                  aria-current={location.pathname === link.path ? 'page' : undefined}
+                  aria-current={
+                    location.pathname === link.path ? "page" : undefined
+                  }
                 >
                   {link.name}
                 </Link>
@@ -113,7 +133,7 @@ function Footer() {
                 FaTwitter,
                 FaWhatsapp,
               }[social.icon];
-              
+
               return (
                 <a
                   key={social.name}
@@ -128,12 +148,12 @@ function Footer() {
               );
             })}
           </div>
-          
+
           <div className="mt-6">
             <h4 className="font-medium mb-2">Payment Methods</h4>
             <div className="flex flex-wrap gap-2">
-              {['Visa', 'Mastercard', 'PayPal', 'Mobile Money'].map((method) => (
-                <span 
+              {["Visa", "Mastercard", "Stripe"].map((method) => (
+                <span
                   key={method}
                   className="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded"
                 >

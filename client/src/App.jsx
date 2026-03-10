@@ -19,7 +19,7 @@ import ShoppingAccount from "./pages/shopping-view/account";
 import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unauth-page";
 import { checkAuth } from "./store/auth-slice";
-import PayPalReturnPage from "./pages/shopping-view/paypal-return";
+import StripeReturnPage from "./pages/shopping-view/stripe-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import ShopPreOrder from "./pages/shopping-view/preorder";
 import SearchProducts from "./pages/shopping-view/search";
@@ -100,7 +100,7 @@ function App() {
             <Route path="preorder" element={<ShopPreOrder />} />
             <Route path="checkout" element={<ShoppingCheckout />} />
             <Route path="account" element={<ShoppingAccount />} />
-            <Route path="paypal-return" element={<PayPalReturnPage />} />
+            <Route path="stripe-return" element={<StripeReturnPage />} />
             <Route path="payment-success" element={<PaymentSuccessPage />} />
             <Route path="search" element={<SearchProducts />} />
             <Route path="contact" element={<ContactPage />} />

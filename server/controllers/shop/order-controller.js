@@ -1,4 +1,4 @@
-const paypal = require("../../helpers/paypal");
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
@@ -19,98 +19,77 @@ const createOrder = async (req, res) => {
       totalAmount,
       taxAmount = 0,
       shippingFee = 0,
-      orderDate,
-      orderUpdateDate,
-      paymentId,
-      payerId,
       cartId,
     } = req.body;
 
-    // Calculate subtotal from cart items (sum of item prices * quantity)
-    const subtotal = cartItems.reduce(
-      (sum, item) => sum + Number(item.price) * item.quantity,
-      0
-    );
+    const newlyCreatedOrder = new Order({
+      userId,
+      userName,
+      cartId,
+      cartItems,
+      addressInfo,
+      orderStatus,
+      paymentMethod,
+      paymentStatus,
+      totalAmount,
+      taxAmount,
+      shippingFee,
+      orderDate: new Date(),
+      orderUpdateDate: new Date(),
+    });
 
-    const subtotalStr = subtotal.toFixed(2);
-    const taxStr = Number(taxAmount).toFixed(2);
-    const shippingStr = Number(shippingFee).toFixed(2);
-    const totalStr = Number(totalAmount).toFixed(2);
+    await newlyCreatedOrder.save();
 
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
+    // Create line items for Stripe Checkout
+    const line_items = cartItems.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: { name: item.title },
+        unit_amount: Math.round(Number(item.price) * 100), // amount in cents
       },
-      redirect_urls: {
-        return_url: `${process.env.FRONTEND_URL}/shop/paypal-return`,
-        cancel_url: `${process.env.FRONTEND_URL}/shop/paypal-cancel`,
-      },
-      transactions: [
-        {
-          item_list: {
-            items: cartItems.map((item) => ({
-              name: item.title,
-              sku: item.productId,
-              price: Number(item.price).toFixed(2),
-              currency: "USD",
-              quantity: item.quantity,
-            })),
-          },
-          amount: {
-            currency: "USD",
-            total: totalStr,
-            details: {
-              subtotal: subtotalStr,
-              tax: taxStr,
-              shipping: shippingStr,
-            },
-          },
-          description: "Order payment",
+      quantity: item.quantity,
+    }));
+
+    if (taxAmount > 0) {
+      line_items.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Tax' },
+          unit_amount: Math.round(Number(taxAmount) * 100),
         },
-      ],
-    };
+        quantity: 1,
+      });
+    }
 
-    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
-      if (error) {
-        console.error("PayPal error details:", JSON.stringify(error.response || error, null, 2));
-        return res.status(500).json({
-          success: false,
-          message: "Error while creating paypal payment",
-          error: error.response || error,
-        });
-      }
-      else {
-        const newlyCreatedOrder = new Order({
-          userId,
-          userName,
-          cartId,
-          cartItems,
-          addressInfo,
-          orderStatus,
-          paymentMethod,
-          paymentStatus,
-          totalAmount,
-          taxAmount,
-          shippingFee,
-          orderDate,
-          orderUpdateDate,
-          paymentId,
-          payerId,
-        });
+    if (shippingFee > 0) {
+      line_items.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Shipping' },
+          unit_amount: Math.round(Number(shippingFee) * 100),
+        },
+        quantity: 1,
+      });
+    }
 
-        await newlyCreatedOrder.save();
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL}/shop/stripe-return?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/shop/checkout`,
+      client_reference_id: newlyCreatedOrder._id.toString(),
+      metadata: {
+        orderId: newlyCreatedOrder._id.toString()
+      },
+      line_items,
+    });
 
-        const approvalURL = paymentInfo.links.find(
-          (link) => link.rel === "approval_url"
-        ).href;
-
-        res.status(201).json({
-          success: true,
-          approvalURL,
-          orderId: newlyCreatedOrder._id,
-        });
-      }
+    // Provide the approval URL to the frontend which will redirect to Stripe
+    res.status(201).json({
+      success: true,
+      approvalURL: session.url,
+      orderId: newlyCreatedOrder._id,
+      sessionId: session.id, // Can be useful tracking
     });
   } catch (e) {
     console.error(e);
@@ -121,10 +100,89 @@ const createOrder = async (req, res) => {
   }
 };
 
+const retryPayment = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    
+    // Find the existing order
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (order.paymentStatus === "paid" || order.orderStatus === "confirmed") {
+      return res.status(400).json({
+        success: false,
+        message: "Order is already paid and confirmed",
+      });
+    }
+
+    // Create line items for Stripe Checkout
+    const line_items = order.cartItems.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: { name: item.title },
+        unit_amount: Math.round(Number(item.price) * 100), // amount in cents
+      },
+      quantity: item.quantity,
+    }));
+
+    if (order.taxAmount > 0) {
+      line_items.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Tax' },
+          unit_amount: Math.round(Number(order.taxAmount) * 100),
+        },
+        quantity: 1,
+      });
+    }
+
+    if (order.shippingFee > 0) {
+      line_items.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Shipping' },
+          unit_amount: Math.round(Number(order.shippingFee) * 100),
+        },
+        quantity: 1,
+      });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL}/shop/stripe-return?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/shop/checkout`,
+      client_reference_id: order._id.toString(),
+      metadata: {
+        orderId: order._id.toString()
+      },
+      line_items,
+    });
+
+    res.status(200).json({
+      success: true,
+      approvalURL: session.url,
+      orderId: order._id,
+      sessionId: session.id, // Can be useful tracking
+    });
+
+  } catch (e) {
+    console.error("Retry payment error:", e);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while retrying payment!",
+    });
+  }
+};
 
 const capturePayment = async (req, res) => {
   try {
-    const { paymentId, payerId, orderId } = req.body;
+    const { sessionId, orderId } = req.body;
 
     // First, verify the order exists
     const order = await Order.findById(orderId);
@@ -135,71 +193,51 @@ const capturePayment = async (req, res) => {
       });
     }
 
-    // Execute the PayPal payment
-    const execute_payment_json = {
-      payer_id: payerId,
-      transactions: [{
-        amount: {
-          currency: 'USD',
-          total: order.totalAmount.toFixed(2)
-        }
-      }]
-    };
+    // Retrieve the Stripe session to verify payment
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    // Execute the payment with PayPal
-    paypal.payment.execute(paymentId, execute_payment_json, async (error, payment) => {
-      if (error) {
-        console.error("PayPal capture error:", error.response || error);
-        return res.status(400).json({ 
-          success: false, 
-          message: "Payment capture failed",
-          error: error.response || error 
+    if (session.payment_status === 'paid') {
+      order.paymentStatus = "paid";
+      order.orderStatus = "confirmed";
+      order.paymentId = session.payment_intent; // Save the Stripe Payment Intent ID
+      order.payerId = session.customer || session.customer_details?.email || "";
+
+      // Update product quantities
+      for (let item of order.cartItems) {
+        const product = await Product.findById(item.productId);
+        if (product) {
+          product.totalStock -= item.quantity;
+          await product.save();
+        }
+      }
+
+      // Clear the cart
+      await Cart.findByIdAndDelete(order.cartId);
+
+      // Save the updated order
+      await order.save();
+
+      // Send confirmation email asynchronously (do not await)
+      const user = await User.findById(order.userId);
+      if (user?.email) {
+        const html = orderConfirmationEmail(order);
+        sendMail(user.email, "Order Confirmed", html).catch(err => {
+          console.error("Failed to send order confirmation email:", err);
         });
       }
 
-      // Only update order if payment was successful
-      if (payment.state === 'approved') {
-        order.paymentStatus = "paid";
-        order.orderStatus = "confirmed";
-        order.paymentId = paymentId;
-        order.payerId = payerId;
-
-        // Update product quantities
-        for (let item of order.cartItems) {
-          const product = await Product.findById(item.productId);
-          if (product) {
-            product.totalStock -= item.quantity;
-            await product.save();
-          }
-        }
-
-        // Clear the cart
-        await Cart.findByIdAndDelete(order.cartId);
-
-        // Save the updated order
-        await order.save();
-
-        // Send confirmation email
-        const user = await User.findById(order.userId);
-        if (user?.email) {
-          const html = orderConfirmationEmail(order);
-          await sendMail(user.email, "Order Confirmed", html);
-        }
-
-        return res.status(200).json({
-          success: true,
-          message: "Order confirmed",
-          data: order,
-        });
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: "Payment not approved",
-          data: payment
-        });
-      }
-    });
-
+      return res.status(200).json({
+        success: true,
+        message: "Order confirmed",
+        data: order,
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Payment not approved by Stripe",
+        data: session
+      });
+    }
   } catch (e) {
     console.error("Payment capture error:", e);
     res.status(500).json({
@@ -263,6 +301,7 @@ const getOrderDetails = async (req, res) => {
 
 module.exports = {
   createOrder,
+  retryPayment,
   capturePayment,
   getAllOrdersByUser,
   getOrderDetails,

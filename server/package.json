@@ -24,11 +24,10 @@
     "multer": "^2.0.0",
     "nodemailer": "^7.0.3",
     "nodemon": "^3.1.10",
-    "paypal-rest-sdk": "^1.8.1"
+    "stripe": "^20.4.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
-    "@types/nodemailer": "^6.4.17",
-    "@types/paypal-rest-sdk": "^1.7.9"
+    "@types/nodemailer": "^6.4.17"
   }
 }

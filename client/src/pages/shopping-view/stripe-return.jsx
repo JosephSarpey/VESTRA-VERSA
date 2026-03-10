@@ -2,50 +2,50 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { capturePayment } from "@/store/shop/order-slice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-function PayPalReturnPage() {
+function StripeReturnPage() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
-  const paymentId = params.get("paymentId");
-  const payerId = params.get("PayerID");
+  const sessionId = params.get("session_id");
 
   useEffect(() => {
-    if (paymentId && payerId) {
+    if (sessionId) {
       const orderId = JSON.parse(sessionStorage.getItem("currentOrderId"));
   
       if (!orderId) {
         console.error("No order ID found in session storage");
-        window.location.href = "/shop/checkout?error=missing_order";
+        navigate("/shop/checkout?error=missing_order", { replace: true });
         return;
       }
   
-      dispatch(capturePayment({ paymentId, payerId, orderId }))
+      dispatch(capturePayment({ sessionId, orderId }))
         .then((data) => {
           if (data?.payload?.success) {
             sessionStorage.removeItem("currentOrderId");
-            window.location.href = "/shop/payment-success";
+            navigate("/shop/payment-success", { replace: true });
           } else {
             console.error("Payment capture failed:", data?.payload?.message);
-            window.location.href = `/shop/checkout?error=payment_failed&paymentId=${paymentId}`;
+            navigate("/shop/checkout?error=payment_failed", { replace: true });
           }
         })
         .catch((error) => {
           console.error("Payment capture error:", error);
-          window.location.href = `/shop/checkout?error=payment_error&paymentId=${paymentId}`;
+          navigate("/shop/checkout?error=payment_error", { replace: true });
         });
     } else {
-      window.location.href = "/shop/checkout?error=invalid_payment";
+      navigate("/shop/checkout?error=invalid_payment", { replace: true });
     }
-  }, [paymentId, payerId, dispatch]);
+  }, [sessionId, dispatch, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <Card className="w-full max-w-md p-6 shadow-md rounded-2xl text-center">
         <CardHeader className="flex flex-col items-center space-y-4">
           <svg
-            className="animate-spin h-10 w-10 text-blue-500"
+            className="animate-spin h-10 w-10 text-indigo-500"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -76,4 +76,4 @@ function PayPalReturnPage() {
   );
 }
 
-export default PayPalReturnPage;
+export default StripeReturnPage;

@@ -4,7 +4,7 @@ import img from "../../assets/account2.jpg";
 import Address from "./address";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
-import { BiLogoPaypal } from "react-icons/bi";
+import { BiCreditCardAlt } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import { createNewOrder } from "@/store/shop/order-slice";
 import { toast } from "sonner";
@@ -37,7 +37,7 @@ function ShoppingCheckout() {
     }
   }, [approvalURL]);
 
-  const handleInitiatePaypalPayment = () => {
+  const handleInitiateStripePayment = () => {
     if (itemsArray.length === 0) {
       toast.error("Your cart is empty! Please add item(s) to proceed.");
       return;
@@ -70,13 +70,11 @@ function ShoppingCheckout() {
     notes: currentSelectedAddress?.notes,
   },
   orderStatus: "pending",
-  paymentMethod: "paypal",
+  paymentMethod: "stripe",
   paymentStatus: "pending",
   totalAmount: total,
   orderDate: new Date(),
   orderUpdateDate: new Date(),
-  paymentId: "",
-  payerId: "",
   
   taxAmount: tax,        
   shippingFee: shippingFee,    
@@ -174,11 +172,11 @@ dispatch(createNewOrder(orderData))
             </ul>
           </div>
 
-          {/* PayPal Button */}
+          {/* Stripe Button */}
           <Button
-            onClick={handleInitiatePaypalPayment}
+            onClick={handleInitiateStripePayment}
             disabled={isPaymentStart}
-            className="mt-4 w-full py-3 text-lg font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow flex justify-center items-center gap-3"
+            className="mt-4 w-full py-3 text-lg font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow flex justify-center items-center gap-3"
           >
             {isPaymentStart ? (
               <>
@@ -187,8 +185,8 @@ dispatch(createNewOrder(orderData))
               </>
             ) : (
               <>
-                <BiLogoPaypal className="text-2xl" />
-                Pay with PayPal
+                <BiCreditCardAlt className="text-2xl" />
+                Pay with Stripe
               </>
             )}
           </Button>

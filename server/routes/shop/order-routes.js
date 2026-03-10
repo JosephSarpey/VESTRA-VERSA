@@ -2,6 +2,7 @@ const express = require("express");
 
 const {
   createOrder,
+  retryPayment,
   capturePayment,
   getAllOrdersByUser,
   getOrderDetails,
@@ -10,6 +11,7 @@ const {
 const router = express.Router();
 
 router.post("/create", createOrder);
+router.post("/retry", retryPayment);
 router.post("/capture", capturePayment);
 router.get("/list/:userId", getAllOrdersByUser);
 router.get("/details/:id", getOrderDetails);
